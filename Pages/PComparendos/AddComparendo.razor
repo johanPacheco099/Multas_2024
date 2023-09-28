@@ -1,0 +1,297 @@
+﻿@using Multas.Models;
+@using Multas.Shared.Services;
+@using System.ComponentModel.DataAnnotations;
+@inject IComparendoService ComparendoService
+
+@page "/Comparendos/Add"
+
+
+
+<h3>Add Comparendo</h3>
+
+<div class="content-wrapper">
+    <section class="content-header"></section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <div class="card-header" style="background-color:#0080ff">
+                            <h3 class="card-title" style="color:white">Agregando Comparendos</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        
+                        <!--"arrroba"Nombredelmodelo-->
+                        <EditForm Model="@comparendos" OnValidSubmit="AddMulta">
+                            
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lFecha">Fecha</label>
+                                            <input type="date" class="form-control col-auto" @bind="comparendos.fecha" id="lFecha">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lHora">Hora</label>
+                                            <!--Cambios de time a datatime-->
+                                            <input type="datetime" class="form-control col-auto" @bind="comparendos.hora" id="lHora">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lClaseVehiculo">Clase Vehiculo</label>
+                                            <select id="lClaseVehiculo" class="form-control col-auto" @bind="comparendos.clase_veh">
+                                                <option value="Automovil">Automovil</option>
+                                                <option value="Bus">Bus</option>
+                                                <option value="Buseta">Buseta</option>
+                                                <option value="Camion">Camion</option>
+                                                <option value="Camion">Camion</option>
+                                                <option value="Camioneta">Camioneta</option>
+                                                <option value="Campero">Campero</option>
+                                                <option value="Microbus">Microbus</option>
+                                                <option value="Motocicleta">Motocicleta</option>
+                                                <option value="Cuatrimoto">Cuatrimoto</option>
+                                                <option value="Motocarro">Motocarro</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lComparendo">Comparendo</label>
+                                            <input type="text" class="form-control col-auto" @bind="comparendos.comparendo" id="lComparendo">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lLugar">Lugar</label>
+                                            <input type="text" class="form-control col-auto" @bind="comparendos.lugar" id="lLugar">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lPlaca">Placa</label>
+                                            <input type="text" class="form-control col-auto"    @bind="comparendos.placa" id="lPlaca">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lCiudadPlaca">Ciudad Placa</label>
+                                            <input type="text" class="form-control col-auto" @bind="comparendos.divipo_placa" id="lCiudadPlaca">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lTipoInfractor">Tipo Infractor</label>
+                                            <select id="lTipoInfractor" class="form-control col-auto"  @bind="comparendos.tipo_infractor" >
+                                                <option value="1">Conductor</option>
+                                                <option value="2">Peaton</option>
+                                                <option value="3">Ciclista</option>
+                                                <option value="4">Motociclista</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lInfraccion">Infraccion</label>
+                                            <input type="text" class="form-control col-auto"  @bind="comparendos.infraccion" id="lInfraccion">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lTipoServicio">Tipo Servicio</label>
+                                            <select id="lTipoServicio" class="form-control col-auto" @bind="comparendos.tipo_servicio">
+                                                <option value="1">Diplomatico</option>
+                                                <option value="2">Consular</option>
+                                                <option value="3">Oficial</option>
+                                                <option value="4">Particular</option>
+                                                <option value="5">Publico</option>
+                                                <option value="6">Otro</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lMunicipio">Municipio</label>
+                                            <input type="text" @bind="comparendos.mun" class="form-control col-auto" id="lMunicipio">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lCedula">Cedula</label>
+                                            <input type="text" @bind="comparendos.cedula" class="form-control" id="lCedula">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lTipoIdentificacion">Tipo Identificacion</label>
+                                            <select id="lTipoIdentificacion" class="form-control col-auto" @bind="comparendos.tipo_id">
+                                                <option value="1">Cedula Ciudadania</option>
+                                                <option value="2">Tarjeta Identidad</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lGradoAlcol">Grado Alcol</label>
+                                            <input type="text" @bind="comparendos.grado_alcol" class="form-control" id="lGradoAlcol">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lNoPrueba">No. Prueba</label>
+                                            <input type="text" @bind="comparendos.prueba" class="form-control" id="lNoPrueba">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lTipoTransporte">Tipo Transporte</label>
+                                            <input type="text" @bind="comparendos.codigo_tran"  class="form-control col-auto" id="lTipoTransporte">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lRadioAccion">Radio Accion</label>
+                                            <input type="text" @bind="comparendos.radio_accion" class="form-control col-auto" id="lRadioAccion">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lModalidad">Modalidad</label>
+                                            <input type="text" @bind="comparendos.modal_tran" class="form-control col-auto" id="lModalidad">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lPatio">Patio</label>
+                                            <input type="text" @bind="comparendos.patio" class="form-control col-auto" id="lPatio">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="lAgente">Agente</label>
+                                            <input type="text"  @bind="comparendos.agente" class="form-control" id="lAgente">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="lEntidad">Entidad</label>
+                                            <select id="lEntidad" class="form-control col-auto" @bind="comparendos.entidad">
+                                                <option value="1">Agente Locales</option>
+                                                <option value="2">Polca</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="lValor">Valor</label>
+                                            <input type="text" class="form-control" id="lValor" @bind="comparendos.valor">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <div class="form-group">
+                                            <!-- checkbox -->
+                                            <div class="form-check">
+                                                <input class="form-check-input"  @bind="comparendos.inmovil" type="checkbox" id="lInmovil">
+                                                <label class="form-check-label" for="lInmovil">Inmovilizado</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" @bind="comparendos.accidente" type="checkbox" id="lAccidente">
+                                                <label class="form-check-label" for="lAccidente">Accidente</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input"  @bind="comparendos.fuga" type="checkbox" id="lFuga">
+                                                <label class="form-check-label" for="lFuga">Fuga</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <!-- checkbox -->
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <input class="form-check-input"  @bind="comparendos.importado" type="checkbox" id="lImportado">
+                                                <label class="form-check-label" for="lImportado">Importado</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" @bind="comparendos.fotomulta" type="checkbox" id="lFotomulta">
+                                                <label class="form-check-label" for="lFotomulta">Fotomulta</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="container-fluid">
+                                    <div class="row mb-2">
+                                        <div class="col-sm-6">
+                                            <button type="submit" class="btn btn-primary pull-right">Guardar</button>
+                                            <input type="hidden" @bind="comparendos.id" id="lId" />
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <ol class="breadcrumb float-sm-right">
+                                                <a asp-page="/Comparendos/Index" class="btn btn-primary pull-right">Atras</a>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <ValidationSummary />
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+@code {
+    Comparendos comparendos = new Comparendos();
+
+    public string errorMessage { get; set; }
+
+    protected async Task AddMulta()
+    {
+        try
+        {
+            if (IsValid())
+            {
+                await ComparendoService.Add(comparendos);
+                comparendos = new Comparendos();
+            }
+        }
+        catch (Exception ex)
+        {
+            // Captura la excepción y almacena el mensaje de error
+            errorMessage = ex.Message;
+        }
+    }
+
+    private bool IsValid()
+    {
+        var context = new ValidationContext(comparendos, serviceProvider: null, items: null);
+        var results = new List<ValidationResult>();
+
+        bool isValid = Validator.TryValidateObject(comparendos, context, results, validateAllProperties: true);
+
+        return isValid;
+    }
+
+
+    
+}
