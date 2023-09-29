@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Multas.Data;
 using Multas.Shared.Services;
+using Multas.Shared.Services.SCoactivo;
+using Multas.Shared.Services.SInteres;
+using Multas.Shared.Services.SLiquidacion;
+using Multas.Shared.Services.SUser;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +14,10 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddScoped<IComparendoService , ComparendoService>();
+builder.Services.AddScoped<ILiquidacionService , LiquidacionService>();
+builder.Services.AddScoped<IInteresService , InteresService>();
+builder.Services.AddScoped<ICoactivoService , CoactivoService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddDbContext<AppDbContext>();
 
 var app = builder.Build();
