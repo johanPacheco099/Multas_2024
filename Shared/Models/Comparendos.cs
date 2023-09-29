@@ -17,13 +17,14 @@ namespace Multas.Models
         public string cedula { get; set; }
         [Required]
         public DateTime fecha { get; set; }
-        public TimeOnly hora { get; set; }
+
+        public string hora { get; set; }
         public string lugar { get; set; }
         [Required]
         public int clase_veh { get; set; }
         [Required]
         public string infraccion { get; set; }
-        public string lic_tran { get; set; }
+        public string? lic_tran { get; set; }
         public string targ_oper { get; set; }
         public string gsangre { get; set; }
         public string? obs { get; set; }

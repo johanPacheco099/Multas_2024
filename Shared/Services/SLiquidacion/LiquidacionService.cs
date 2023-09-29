@@ -1,4 +1,5 @@
-﻿using Multas.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Multas.Models;
 
 namespace Multas.Shared.Services.SLiquidacion
 {
@@ -13,9 +14,11 @@ namespace Multas.Shared.Services.SLiquidacion
             _configuration = configuration;
             _dbContext = dbContext;
         }
-        public Task<int> Add(Resoluciones resoluciones)
+        public async Task<int> Add(Resoluciones resoluciones)
         {
-            throw new NotImplementedException();
+            await _dbContext.resoluciones.AddAsync(resoluciones);
+            await _dbContext.SaveChangesAsync();
+            return 1;
         }
 
         public Task<int> GenerarAcuerdoAsync(int h, string pcomp, string pcedula, DateTime pfecha, string pvalor, string pinicial, string pinteres, string pvlr_acuerdo, string pcuotas, string pvlr_recibo)
@@ -38,10 +41,16 @@ namespace Multas.Shared.Services.SLiquidacion
             throw new NotImplementedException();
         }
 
-        public Task<List<Recibos>> GetRecibos(string comparendo)
+        public async Task<List<Recibos>> GetRecibos(string comparendop)
         {
-            throw new NotImplementedException();
+           
+            var recibos = await _dbContext.recibos
+                .Where(r => r.comparendo == comparendop) // Filtra por el comparendo deseado
+                .ToListAsync();
+
+            return recibos;
         }
+
 
         public Task<List<Resoluciones>> GetResol(string comparendo)
         {

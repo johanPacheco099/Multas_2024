@@ -18,7 +18,8 @@ builder.Services.AddScoped<ILiquidacionService , LiquidacionService>();
 builder.Services.AddScoped<IInteresService , InteresService>();
 builder.Services.AddScoped<ICoactivoService , CoactivoService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddDbContext<AppDbContext>();
+//builder.Services.AddDbContext<AppDbContext>();
+builder.Services.AddDbContext<AppDbContext>(ServiceLifetime.Scoped);
 
 var app = builder.Build();
 

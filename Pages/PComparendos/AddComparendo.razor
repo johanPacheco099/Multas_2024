@@ -33,27 +33,27 @@
                                             <input type="date" class="form-control col-auto" @bind="comparendos.fecha" id="lFecha">
                                         </div>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label for="lHora">Hora</label>
-                                            <!--Cambios de time a datatime-->
-                                            <input type="time" class="form-control col-auto" @bind="comparendos.hora" id="lHora">
-                                        </div>
-                                    </div>
+                                   <div class="col-sm-3">
+    <div class="form-group">
+        <label for="lHora">Hora (hh:mm AM/PM)</label>
+        <input type="text" class="form-control col-auto" @bind="comparendos.hora" id="lHora" placeholder="hh:mm AM/PM">
+    </div>
+</div>
+
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label for="lClaseVehiculo">Clase Vehiculo</label>
                                             <select id="lClaseVehiculo" class="form-control col-auto" @bind="comparendos.clase_veh">
-                                                <option value="Automovil">Automovil</option>
-                                                <option value="Bus">Bus</option>
-                                                <option value="Buseta">Buseta</option>
-                                                <option value="Camion">Camion</option>
-                                                <option value="Camioneta">Camioneta</option>
-                                                <option value="Campero">Campero</option>
-                                                <option value="Microbus">Microbus</option>
-                                                <option value="Motocicleta">Motocicleta</option>
-                                                <option value="Cuatrimoto">Cuatrimoto</option>
-                                                <option value="Motocarro">Motocarro</option>
+                                                <option value="1">Automovil</option>
+                                                <option value="2">Bus</option>
+                                                <option value="3">Buseta</option>
+                                                <option value="4">Camion</option>
+                                                <option value="5">Camioneta</option>
+                                                <option value="6">Campero</option>
+                                                <option value="7">Microbus</option>
+                                                <option value="8">Motocicleta</option>
+                                                <option value="9">Cuatrimoto</option>
+                                                <option value="10">Motocarro</option>
                                             </select>
                                         </div>
                                     </div>
@@ -262,25 +262,26 @@
     Comparendos comparendos = new Comparendos
     {
         fecha = DateTime.Now,
-       
     };
 
     public string errorMessage { get; set; }
-
+    //error al agregar comparendo si es fecha de hoy.
     protected async Task AddMulta()
     {
         try
         {
             if (IsValid())
             {
+                comparendos.fecha = DateTime.SpecifyKind(comparendos.fecha, DateTimeKind.Utc);
                 await ComparendoService.Add(comparendos);
-                comparendos = new Comparendos();
+
+       
             }
         }
         catch (Exception ex)
         {
-            // Captura la excepción y almacena el mensaje de error
-            errorMessage = ex.Message;
+            
+            errorMessage = $"Error al agregar el comparendo: {ex.Message}";
         }
     }
 

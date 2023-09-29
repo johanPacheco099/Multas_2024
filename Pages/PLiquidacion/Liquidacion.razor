@@ -1,0 +1,563 @@
+﻿@page "/Liquidaciones"
+@using Multas.Models;
+@using Multas.Shared.Services.SLiquidacion;
+@inject ILiquidacionService LiquidacionService
+
+<h3>Liquidacion</h3>
+
+<script src="https://code.jquery.com/jquery-3.4.0.js"></script>
+<!--
+    <script>
+    $(document).ready(function () {
+        var filas = 1;
+        var pcomparendo = $('#comparendoBusqueda').val();
+        var pcedula = $('#cedula').val();
+        var pvalor = $('#ptot').val();
+        var pinteres = $('#interes').val();
+        var pdescuento = $('#dcto').val();
+        var pacuerdo = $('#acuerdo').val();
+        var precibo = $('#recibo').val();
+            $("#fec_ini").val(new Date);
+        $('#button1').click(function () {
+            $.ajax({
+                type: 'GET',
+                data: { filas: filas, pcomparendo: pcomparendo, pcedula: pcedula, pvalor: pvalor, pinteres: pinteres, pdescuento: pdescuento, pacuerdo: pacuerdo, precibo: precibo },
+                url: 'Liquidaciones?handler=Generar',
+                success: function (result) {
+                    alert(result)
+                }
+            });
+        });
+        $('#boton_ac').click(function () {
+            var filas = 1;
+            var pcomp = $('#comparendoBusqueda').val();
+            var pcedula = $('#cedula').val();
+            var pvalor = $('#ptot').val();
+            var pinteres = $('#interes').val();
+            var pvlr_acuerdo = $('#acuerdo').val();
+            var pvlr_recibo = $('#recibo').val();
+            var pinicial = $('#inicial').val();
+            var pcuotas = $('#quantity').val();
+            var pfecha = $('#fec_ini').val();
+            $.ajax({
+                type: 'GET',
+                data: { filas: filas, pcomp: pcomp, pcedula: pcedula, pfecha: pfecha, pvalor: pvalor,
+                    pinicial: pinicial, pinteres: pinteres, pvlr_acuerdo: pvlr_acuerdo, pcuotas: pcuotas, pvlr_recibo: pvlr_recibo},
+                url: 'Liquidaciones?handler=Generar_ac',
+                success: function (result) {
+                    alert(result)
+                }
+            });
+        });
+
+            $("#quantity").change(function () {
+                var filas = $('#quantity').val();
+                var inicial = $('#inicial').val();
+                var porc = $('#porc').val();
+                var interes_in = ($('#interes').val() * porc) / 100;
+                var acuerdo_in = ($('#acuerdo').val() * porc) / 100;
+                var x = ($('#baseliquidacion').val() - inicial) / (filas - 1);
+                var capital = x;
+                var capital_in = inicial;
+                var interes = ($('#interes').val() - interes_in) / (filas - 1);
+                var acuerdo = ($('#acuerdo').val() - acuerdo_in) / (filas - 1);
+                var fv = $('#fec_ini').val()
+                $.ajax({
+                    type: 'GET',
+                    data: { filas: filas },
+                    url: '@Url.Action("Index","Tabla")',
+                    success: function (result) {
+                        $("#contenido").empty();
+
+                        for (var i = 0; i < filas; i++) {
+                            if(i=="0") {
+                                $("#contenido").append("<tr align=center><td>" + (i + 1) + "</td><td>" + fv + "</td><td>" + capital_in + "</td><td>" + interes_in + "</td><td>Vlr Recibo</td><td>" + acuerdo_in + "</td><td>" + inicial + "</td></tr>");
+                            }
+                            else
+                                {
+                                $("#contenido").append("<tr align=center><td>" + (i + 1) + "</td><td>" + fv + "</td><td>" + capital + "</td><td>" + interes + "</td><td>Vlr Recibo</td><td>"+acuerdo+"</td><td>" + x + "</td></tr>");
+                            }
+                        }
+                    }
+                });
+
+
+
+            });
+
+        });
+</script>
+
+-->
+
+
+<div class="content-wrapper">
+    <br />
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card card-primary card-outline">
+                            <div class="card-header" style="background-color: #0080ff">
+                                <h3 class="card-title">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                    Liquidacion de comparendos
+                                </h3>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-9">
+                                        <div class="form-group">
+                                            <EditForm method="post" Model="@liquidacion">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-8 col-form-label">No. Comparendo</label>
+                                                            <div class="input-group">
+                                                                <input type="text" @bind="liquidacion.comparendo" class="form-control" id="comparendoBusqueda" name="busqueda">
+                                                                <span class="input-group-append">
+                                                                    <button type="submit" asp-page-handler="Busc" class="btn btn-info btn-flat"><i class="fas fa-search"></i></button>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group row">
+                                                                <label class="col-sm-6 col-form-label">Document</label>
+                                                                <div class="col-sm-6">
+                                                                    <input type="text" @bind="liquidacion.pdoc" name="DocInfractor" class="form-control" id="cedula" placeholder="Numero Documento">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <div class="form-group row">
+                                                                    <label class="col-sm-6 col-form-label">Infractor</label>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" @bind="liquidacion.pnombre" class="form-control" id="1" placeholder="Nombre Infractor">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            </EditForm>
+                                        </div>
+                                        
+                                    </div>
+                                  
+                                </div>
+                                <ul class="nav nav-tabs" id="custom-content-below-tab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="pestañaLiquidacion" data-toggle="pill" href="#contenidoLiquidacion" role="tab" aria-controls="contenidoLiquidacion" aria-selected="true">Liquidacion</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pestañaPagos" data-toggle="pill" href="#contenidoPagos" role="tab" aria-controls="contenidoPagos" aria-selected="false">Pagos</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pestañaResoluciones" data-toggle="pill" href="#custom-content-below-messages" role="tab" aria-controls="custom-content-below-messages" aria-selected="false">Resoluciones</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pestañaAcuerdosDePagos" data-toggle="pill" href="#contenidoAcuerdosDePago" role="tab" aria-controls="contenidoAcuerdosDePago" aria-selected="false">Acuerdos De Pago</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pestañaCobroCoactivo" data-toggle="pill" href="#contenidoCobroCoactivo" role="tab" aria-controls="contenidoCobroCoactivo" aria-selected="false">Cobro Coactivo</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pestañaCorreciones" data-toggle="pill" href="#contenidoCorrecciones" role="tab" aria-controls="contenidoCorrecciones" aria-selected="false">Correcciones</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="custom-content-below-tabContent">
+                                    <div class="tab-pane fade show active" id="contenidoLiquidacion" role="tabpanel" aria-labelledby="pestañaLiquidacion">
+                                        <br />
+                                        <div class="row">
+                                            <!-- Inicio Tabla -->
+                                            <div class="card col-lg-9">
+                                                <div class="card-header" style="background-color: #0080ff" />
+                                                <h3 class="card-title" style="color:white">Conceptos</h3>
+                                            </div>
+                                            <div class="card-body p-0">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr align="center">
+                                                            <th style="width: 10px">Item</th>
+                                                            <th>Detalle</th>
+                                                            <th>Valor</th> 
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                            <tr align="center">
+                                                                <td>001</td>
+                                                                <td>Valor</td>
+                                                                <td>
+                                                                    <input type="text" id="baseliquidacion" style="background-color: transparent;        font-size: 15px;  font-weight: bold; border: 0px" @bind="liquidacion.pvalor">
+                                                                </td>
+                                                            </tr>
+                                                        <tr align="center">
+                                                            <td>002</td>
+                                                            <td>Interes De Mora</td>
+                                                            <td>
+                                                                <input type="text" id="interes" style="background-color: transparent; font-size: 15px; font-weight: bold; border: 0px" @bind="liquidacion.pinteres_mora">
+                                                            </td>
+                                                        </tr>
+                                                        <tr align="center">
+                                                            <td>003</td>
+                                                            <td>Abonos</td>
+                                                            <td>
+                                                                <input type="text" style="background-color:transparent; border:0px" @bind="liquidacion.pabono">
+                                                            </td>
+                                                        </tr>
+                                                        <tr align="center">
+                                                            <td>004</td>
+                                                            <td>Descuento</td>
+                                                            <td>
+                                                                <input type="text" id="dcto" style="background-color:transparent; border:0px" @bind="liquidacion.pdescuento">
+                                                            </td>
+                                                        </tr>
+                                                        <tr align="center">
+                                                            <td>005</td>
+                                                            <td>Valor Recibo</td>
+                                                            <td>
+                                                                <input type="text" name="recibo" id="recibo" style="background-color: transparent; font-size: 15px;font-weight: bold; border: 0px" @bind="liquidacion.pvlr_recibo">
+                                                            </td>
+                                                        </tr>
+                                                        <tr align="center">
+                                                            <td>006</td>
+                                                            <td>Valor Adicional</td>
+                                                            <td>
+                                                                <input type="text" id="acuerdo" style="background-color: transparent; font-size: 15px; font-weight: bold; border: 0px" @bind="liquidacion.pvlr_adicional">
+                                                            </td>
+                                                        </tr>
+                                                        <tr align="center">
+                                                            <td>007</td>
+                                                            <td>Valor CIA</td>
+                                                            <td>
+                                                                0.00
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <div class="card-footer">
+                                                    <button type="button" id="button1" name="button1" class="btn btn-primary pull-right">Generar Recibo</button>
+                                                    <label class="col-sm-6 col-form-label"></label>
+                                                    <input type="text" id="ptot" style="color:red; font-size:24px; font-weight:bold; border:20px" @bind="liquidacion.ptotal">
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="card col-lg-3 center">
+                                            <div class="card card-success">
+                                                <div class="card-header" style="background:#D1E1FA">
+                                                    <h3 class="card-title">Datos de Comparendo</h3>
+                                                </div>
+                                                <div class="card-body" style="background: white">
+                                                    <dl class="dl-horizontal">
+                                                        <dt>Fecha Comparendo</dt>
+                                                        <dd><input type="text" style="background-color:transparent; border:0px" @bind="liquidacion.pfecha" id="1" class="form-control"></dd>
+                                                        <dt>Resolucion de Sancion</dt>
+                                                        <dd><input type="text" style="background-color:transparent; border:0px" @bind="liquidacion.presol" class="form-control"></dd>
+                                                        <dt>Codigo Infraccion</dt>
+                                                        <dd><input type="text" style="background-color:transparent; border:0px" @bind="liquidacion.pinfraccion" class="form-control"></dd>
+                                                        <dt>Descripcion Infraccion</dt>
+                                                        <dd><input type="text" style="background-color:transparent; border:0px" @bind="liquidacion.pninfraccion" class="form-control"></dd>
+                                                        <dd></dd>
+                                                        <dt>Lugar</dt>
+                                                        <dd>Lugar de infraccion</dd>
+                                                        <dd></dd>
+                                                        <dt>Agente</dt>
+                                                        <dd>xxxxxxxxxxxxxxx</dd>
+                                                        <dt>Entidad</dt>
+                                                        <dd>xxxxx</dd>
+                                                        <dt>Fototomulta &nbsp;&nbsp; <input type="checkbox" name="check" /></dt>
+                                                        <dt>Fecha de Notificacion</dt>
+                                                    </dl>
+                                                </div>
+                                                <!-- /.card-body -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="contenidoPagos" role="tabpanel" aria-labelledby="pestañaPagos">
+                                    <section class="content-header">
+                                        <div class="container-fluid">
+                                            <div class="row mb-2">
+                                                <div class="col-sm-6">
+                                                    <h1>Pagos Realizados</h1>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <ol class="breadcrumb float-sm-right"></ol>
+                                                </div>
+                                            </div>
+                                        </div><!-- /.container-fluid -->
+                                    </section>
+                                    <section class="content">
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="card">
+                                                        <form asp-action="Index" method="get">
+                                                            <div class="card-header">
+                                                                <h2 class="card-title"></h2>
+                                                                <div class="card-tools">
+
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                        <div class="card-body table-responsive p-0">
+                                                            <table class="table">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Recibo</th>
+                                                                        <th>Codigo</th>
+                                                                        <th>Nombre</th>
+                                                                        <th>Valor</th>
+                                                                        <th>Descuento</th>
+                                                                        @*<td align="center"> <b>Acciones </b></td>*@
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @try
+                                                                    {
+                                                                        if (reciboslist != null && reciboslist.Count > 0)
+                                                                        {
+                                                                            foreach (var reciboslist1 in reciboslist)
+                                                                            {
+                                                                                <tr>
+                                                                                    <td>@reciboslist1.id</td>
+                                                                                    <td>@reciboslist1.fecha</td>
+                                                                                    <td>@reciboslist1.fecpago</td>
+                                                                                    <td>@reciboslist1.interes_mora</td>
+                                                                                    <td>@reciboslist1.valor</td>
+                                                                                    <td align="center">
+                                                                                    </td>
+                                                                                </tr>
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <tr>
+                                                                                <td colspan="6">Está vacía la lista de recibos</td>
+                                                                            </tr>
+                                                                        }
+                                                                    }
+                                                                    catch
+                                                                    {
+                                                                        <tr>
+                                                                            <td colspan="6">Error al procesar la lista de recibos</td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+
+
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><!-- /.container-fluid -->
+                                    </section>
+
+                                </div>
+                                <div class="tab-pane fade" id="custom-content-below-messages" role="tabpanel" aria-labelledby="pestañaResoluciones">
+
+                                    <section class="content">
+                                        <section class="content-header">
+                                            <div class="container-fluid">
+                                                <div class="row mb-2">
+                                                    <div class="col-sm-6">
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <ol class="breadcrumb float-sm-right">
+                                                            <a asp-page="/Liquidaciones/Add_resol" class="btn btn-primary pull-right">Nueva Resolucion</a>
+                                                        </ol>
+                                                    </div>
+                                                </div>
+                                            </div><!-- /.container-fluid -->
+                                        </section>
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="card">
+                                                        <form asp-action="Index" method="get">
+                                                            <div class="card-header" style="background-color:#0080ff">
+                                                                <h2 class="card-title"></h2>
+                                                            </div>
+                                                        </form>
+                                                        <div class="card-body table-responsive p-0">
+                                                            <table class="table table-striped">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Estado</th>
+                                                                        <th>Numero</th>
+                                                                        <th>Fecha</th>
+                                                                        <th>Resolucion</th>
+                                                                        <th>Resolucion Anterior</th>
+                                                                        <th>Tipo</th>
+                                                                        <th>Nombre</th>
+                                                                        <td align="center"> <b>Acciones </b></td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var resolucioneslist1 in resolucioneslist)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@resolucioneslist1.estado</td>
+                                                                            <td>@resolucioneslist1.id</td>
+                                                                            <td>@resolucioneslist1.fecha</td>
+                                                                            <td>@resolucioneslist1.resolucion</td>
+                                                                            <td>@resolucioneslist1.resol_ant</td>
+                                                                            <td>@resolucioneslist1.tipo</td>
+                                                                            <td>@resolucioneslist1.ntipo</td>
+                                                                            <td align="center">
+                                                                                <a class="btn btn-primary" asp-route-id="1">Anular</a> 
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><!-- /.container-fluid -->
+                                    </section>
+                                </div>
+                                <div class="tab-pane fade" id="contenidoAcuerdosDePago" role="tabpanel" aria-labelledby="pestañaAcuerdosDePagos">
+                                    <div class="card-body">
+                                        <div class="row mb-1">
+                                            <div class="col-sm-3">
+                                                    <button type="button" id="boton_ac" name="boton_ac" class="btn btn-light pull-right">Grabar Acuerdo</button>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                   <button type="button" class="btn btn-light">
+                                                        Imprimir Acuerdo
+                                                    </button>
+                                              </div>
+                                        </div>
+                                        <br/>
+                                        <div class="row" style="display: flex; flex-direction: row; align-items: center; background-color: #EAEDED">
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label for="quantity">Cuota Inicial :</label>
+                                                    <input type="text" id="inicial" name="val" @bind="liquidacion.vlr_inicial" class="form-control">
+                                                    <input type="hidden" id="porc" name="quancccc" @bind="liquidacion.porc_ac" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label for="quantity">Fecha Acuerdo :</label>
+                                                    <input type="date" id="fec" name="quancctity" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label for="quantity">No. Cuotas :</label>
+                                                    <input type="number" id="quantity" name="quantity" min="1" max="10" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label for="quantity">Fecha 1ra Cuota :</label>
+                                                    <input type="date" id="fec_ini" name="fec_ini" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body table-responsive p-0" >
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr align="center" style="background-color: #0080ff">
+                                                        <th>Cuota</th>
+                                                        <th>Fecha Vence</th>
+                                                        <th>Capital</th>
+                                                        <th>Interes</th>
+                                                        <th>Vlr. Recibo</th>
+                                                        <th>Vlr. Acuerdo</th>
+                                                        <th>Valor Cuota</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="contenido">
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="contenidoCobroCoactivo" role="tabpanel" aria-labelledby="pestañaCobroCoactivo">
+                                    <section class="content-header">
+                                        <section class="content">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="card">
+                                                            <form asp-action="Index" method="get">
+                                                                <div class="card-header" style="background-color:#0080ff">
+                                                                    <h2 class="card-title"></h2>
+                                                                </div>
+                                                            </form>
+                                                            <div class="card-body table-responsive p-0">
+                                                                <table class="table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Expediente</th>
+                                                                            <th>Resolucion</th>
+                                                                            <th>Fecha Mandamiento</th>
+                                                                            <th>Estado</th>
+                                                                            <th>Fecha Proceso</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach (var item in procesoslist)
+                                                                        {
+                                                                            <tr>
+                                                                                <td>@item.expediente</td>
+                                                                                <td>@item.resolucion</td>
+                                                                                <td>@item.fecha_mdto</td>
+                                                                                <td>@item.nestado</td>
+                                                                                <td>@item.fecha_proc</td>
+                                                                            </tr>
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div><!-- /.container-fluid -->
+                                        </section>
+                                    </section>
+                                </div>
+                                <div class="tab-pane fade" id="contenidoCorrecciones" role="tabpanel" aria-labelledby="pestañaCorreciones">
+                                    ornare dictumst. Praesent imperdiet accumsan ex sit amet facilisis.
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+        
+
+
+@code {
+
+    public Liquidaciones liquidacion { get; set; }
+
+    public List<Resoluciones> resolucioneslist { get; set; }
+
+    public List<Recibos> reciboslist { get; set; }
+
+    public List<Procesos> procesoslist { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+       // liquidacion = await LiquidacionService.GetRecibos();   
+    }
+
+}

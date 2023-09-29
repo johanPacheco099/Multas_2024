@@ -1,4 +1,5 @@
 using Dapper;
+using Microsoft.EntityFrameworkCore;
 using Multas.Models;
 using Npgsql;
 
@@ -40,7 +41,7 @@ namespace Multas.Shared.Services
                 try
                 {
                     await con.OpenAsync();
-                    // \"Comparendos\""; para que la bd reconozca, se creo la tabla con C mayúscula porque habia conflicto de nombres. 
+                    
                     var query = "SELECT * FROM \"Comparendos\"";
                     comparendos = con.Query<Comparendos>(query).ToList();
                 }
@@ -68,10 +69,40 @@ namespace Multas.Shared.Services
             throw new NotImplementedException();
         }
 
-        public Task<Comparendos> GetMultasById(int id)
+        public async Task GetMultasById(int id)
         {
-            throw new NotImplementedException();
+            var comparendo = await _dbContext.FindAsync<Comparendos>(id);
 
         }
+
+
+
+        public async Task<List<Comparendos>> GetComparendosByCedula(string cedula)
+        {
+            var connectionString = GetConnection();
+            List<Comparendos> comparendosList = new List<Comparendos>();
+
+            using (var con = new NpgsqlConnection(connectionString))
+            {
+                try
+                {
+                    await con.OpenAsync();
+                    var query = "SELECT * FROM \"Comparendos\" WHERE cedula = @cedula";
+                    comparendosList = con.Query<Comparendos>(query, new { cedula }).ToList();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    con.Close();
+                }
+            }
+
+            return comparendosList;
+        }
+
+
     }
 }

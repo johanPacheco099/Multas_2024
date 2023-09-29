@@ -6,14 +6,14 @@ namespace Multas.Shared.Services
     {
               
         Task<Comparendos> Add(Comparendos comparendo);
-
+        Task<List<Comparendos>> GetComparendosByCedula(string cedula);
         Task<List<Comparendos>> GetAll();
-
+        //cambiar a int, dato devuelto
         Task<Comparendos> UpdateMulta(int id);
 
         int DeleteComparendos(int id);
 
-        Task<Comparendos> GetMultasById(int id);
+        Task GetMultasById(int id);
         
     }   
 }

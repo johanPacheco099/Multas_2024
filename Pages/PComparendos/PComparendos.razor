@@ -1,10 +1,10 @@
 ﻿@using Multas.Models;
 @using Multas.Shared.Services;
+
 @inject IComparendoService ComparendoService;
 
 @page "/Comparendos"
 
-<h3>Comparendos</h3>
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">
@@ -30,13 +30,19 @@
                                 <h2 class="card-title"></h2>
                                 <div class="card-tools">
                                     <div class="input-group input-group-sm" style="width: 350px;">
-                                        <input type="text" name="searchString" class="form-control float-right"
-                                            placeholder="Buscar" />
+                                        <input type="text" id="buscarnit" name="searchString" class="form-control float-right" @bind="buscarnit"
+                                               placeholder="Buscar" />
                                         <div class="input-group-append">
-                                            <button type="submit" class="btn btn-default"><i
-                                                    class="fas fa-search"></i></button>
+                                            <button @onclick="findbycedula" class="bg-white border-0 h-100">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="primary" class="bi bi-search" viewBox="0 0 16 16">
+                                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                                                </svg>
+                                            </button>
                                         </div>
+                                        
+
                                     </div>
+
                                 </div>
                             </div>
                         </form>
@@ -58,10 +64,11 @@
                                     {
                                         @foreach (var comparendos in comparendos)
                                         {
+
                                             <tr>
                                                 <td>@comparendos.id</td>
                                                 <td>@comparendos.comparendo</td>
-                                                <td>@comparendos.fecha</td>
+                                                <td>@comparendos.fecha.Date.ToString("dd-MM-yyyy")</td>
                                                 <td>@comparendos.cedula</td>
                                                 <td>@comparendos.infraccion</td>
                                                 <td>@comparendos.valor</td>
@@ -71,7 +78,7 @@
                                                             asp-route-id="@comparendos.id">Editar</a> |
                                                         <button type="submit" class="btn btn-danger" asp-page-handler="Delete"
                                                             asp-route-id="@comparendos.id"
-                                                            onclick="return confirm('Are you sure to delete this @comparendos.id product?');">Eliminar</button>
+                                                            onclick="return confirm('¿Estás seguto de eliminar este comparendo  @comparendos.comparendo ?');">Eliminar</button>
                                                     </form>
                                                 </td>
                                             </tr>
@@ -94,11 +101,46 @@
 </div>
 
 @code {
+    private string buscarnit;
+
+    private Comparendos comparendosobj = new Comparendos();
 
     private List<Comparendos> comparendos { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        comparendos = new List<Comparendos>();
-        comparendos = await ComparendoService.GetAll();
+        comparendos = (await ComparendoService.GetAll()).ToList();
     }
+
+
+   
+    private async Task findbycedula()
+    {
+        Console.WriteLine($"Valor de buscarnit: {buscarnit}");
+        var comparendosList = await ComparendoService.GetComparendosByCedula(buscarnit);
+
+        if (comparendosList != null && comparendosList.Count > 0)
+        {
+            Console.WriteLine($"comparendosobj se ha establecido correctamente: {comparendosList.Count} resultados");
+
+            foreach (var comparendo in comparendosList)
+            {
+                Console.WriteLine($"ID: {comparendo.id}");
+                Console.WriteLine($"Comparendo: {comparendo.comparendo}");
+                Console.WriteLine($"Fecha: {comparendo.fecha.Date.ToString("dd-MM-yyyy")}");
+                Console.WriteLine($"Cedula: {comparendo.cedula}");
+                Console.WriteLine($"Infraccion: {comparendo.infraccion}");
+                Console.WriteLine($"Valor: {comparendo.valor}");
+            }
+
+            comparendos = comparendosList;
+        }
+        else
+        {
+            comparendos = new List<Comparendos>(); // Limpia la lista de comparendos si no se encontraron resultados
+            Console.WriteLine("No se encontraron resultados.");
+        }
+    }
+
+
 }
