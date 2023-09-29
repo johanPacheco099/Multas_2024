@@ -17,7 +17,7 @@ namespace Multas.Models
         public string cedula { get; set; }
         [Required]
         public DateTime fecha { get; set; }
-        public TimeSpan hora { get; set; }
+        public TimeOnly hora { get; set; }
         public string lugar { get; set; }
         [Required]
         public int clase_veh { get; set; }

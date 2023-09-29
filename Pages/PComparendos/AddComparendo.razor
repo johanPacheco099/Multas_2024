@@ -22,10 +22,9 @@
                         </div>
                         <!-- /.card-header -->
                         <!-- form start -->
-                        
                         <!--"arrroba"Nombredelmodelo-->
                         <EditForm Model="@comparendos" OnValidSubmit="AddMulta">
-                            
+
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-3">
@@ -38,7 +37,7 @@
                                         <div class="form-group">
                                             <label for="lHora">Hora</label>
                                             <!--Cambios de time a datatime-->
-                                            <input type="datetime" class="form-control col-auto" @bind="comparendos.hora" id="lHora">
+                                            <input type="time" class="form-control col-auto" @bind="comparendos.hora" id="lHora">
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
@@ -48,7 +47,6 @@
                                                 <option value="Automovil">Automovil</option>
                                                 <option value="Bus">Bus</option>
                                                 <option value="Buseta">Buseta</option>
-                                                <option value="Camion">Camion</option>
                                                 <option value="Camion">Camion</option>
                                                 <option value="Camioneta">Camioneta</option>
                                                 <option value="Campero">Campero</option>
@@ -76,7 +74,7 @@
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label for="lPlaca">Placa</label>
-                                            <input type="text" class="form-control col-auto"    @bind="comparendos.placa" id="lPlaca">
+                                            <input type="text" class="form-control col-auto" @bind="comparendos.placa" id="lPlaca">
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
@@ -88,7 +86,7 @@
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label for="lTipoInfractor">Tipo Infractor</label>
-                                            <select id="lTipoInfractor" class="form-control col-auto"  @bind="comparendos.tipo_infractor" >
+                                            <select id="lTipoInfractor" class="form-control col-auto" @bind="comparendos.tipo_infractor">
                                                 <option value="1">Conductor</option>
                                                 <option value="2">Peaton</option>
                                                 <option value="3">Ciclista</option>
@@ -101,7 +99,7 @@
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label for="lInfraccion">Infraccion</label>
-                                            <input type="text" class="form-control col-auto"  @bind="comparendos.infraccion" id="lInfraccion">
+                                            <input type="text" class="form-control col-auto" @bind="comparendos.infraccion" id="lInfraccion">
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
@@ -157,7 +155,7 @@
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label for="lTipoTransporte">Tipo Transporte</label>
-                                            <input type="text" @bind="comparendos.codigo_tran"  class="form-control col-auto" id="lTipoTransporte">
+                                            <input type="text" @bind="comparendos.codigo_tran" class="form-control col-auto" id="lTipoTransporte">
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
@@ -183,7 +181,7 @@
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label for="lAgente">Agente</label>
-                                            <input type="text"  @bind="comparendos.agente" class="form-control" id="lAgente">
+                                            <input type="text" @bind="comparendos.agente" class="form-control" id="lAgente">
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
@@ -207,7 +205,7 @@
                                         <div class="form-group">
                                             <!-- checkbox -->
                                             <div class="form-check">
-                                                <input class="form-check-input"  @bind="comparendos.inmovil" type="checkbox" id="lInmovil">
+                                                <input class="form-check-input" @bind="comparendos.inmovil" type="checkbox" id="lInmovil">
                                                 <label class="form-check-label" for="lInmovil">Inmovilizado</label>
                                             </div>
                                             <div class="form-check">
@@ -215,7 +213,7 @@
                                                 <label class="form-check-label" for="lAccidente">Accidente</label>
                                             </div>
                                             <div class="form-check">
-                                                <input class="form-check-input"  @bind="comparendos.fuga" type="checkbox" id="lFuga">
+                                                <input class="form-check-input" @bind="comparendos.fuga" type="checkbox" id="lFuga">
                                                 <label class="form-check-label" for="lFuga">Fuga</label>
                                             </div>
                                         </div>
@@ -224,7 +222,7 @@
                                         <!-- checkbox -->
                                         <div class="form-group">
                                             <div class="form-check">
-                                                <input class="form-check-input"  @bind="comparendos.importado" type="checkbox" id="lImportado">
+                                                <input class="form-check-input" @bind="comparendos.importado" type="checkbox" id="lImportado">
                                                 <label class="form-check-label" for="lImportado">Importado</label>
                                             </div>
                                             <div class="form-check">
@@ -261,7 +259,11 @@
 </div>
 
 @code {
-    Comparendos comparendos = new Comparendos();
+    Comparendos comparendos = new Comparendos
+    {
+        fecha = DateTime.Now,
+       
+    };
 
     public string errorMessage { get; set; }
 
@@ -291,7 +293,4 @@
 
         return isValid;
     }
-
-
-    
 }
