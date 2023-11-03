@@ -61,12 +61,12 @@ namespace Multas.Models
         public int radio_accion { get; set; }
         public string divipo_placa { get; set; }
         public string id_testigo { get; set; }
-        public bool incumplio { get; set; }
+        public bool incumplio_ap { get; set; }
         public int grado_alcol { get; set; }
         public string equipo { get; set; }
         public bool fotomulta { get; set; }
         public DateTime fecha_notif { get; set; }
-        public DateTime fec_Sancion { get; set; }
+        public DateTime fec_sancion { get; set; }
         public int vel_per { get; set; }
         public int vel_medida { get; set; }
         public int mun { get; set; }

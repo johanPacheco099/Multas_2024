@@ -1,0 +1,102 @@
+﻿@page "/Persuasivos"
+
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>Entidad</label>
+                        <select id="cars11" name="cars11" class="form-control col-auto">
+                            <option value="0">Todos</option>
+                            <option value="1">No. Comparendo</option>
+                            <option value="2">Vigencia</option>
+                            <option value="3">Fecha Comparendo</option>
+                            <option value="4">No. Transaccion</option>
+                        </select>
+
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>Opcion</label>
+                        <select id="Entidad" class="form-control col-auto">
+
+                            <option value="1">Consultar Todos</option>
+                            <option value="2">Por Fecha</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>Desde Fecha</label>
+                        <input type="date" class="form-control col-auto">
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>Hasta Fecha</label>
+                        <input type="date" class="form-control col-auto">
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <form method="post">
+                <div class="row mb-1">
+                    <div class="col-sm-1">
+                        <ol class="breadcrumb float-sm-left">
+                            <input type="hidden" id="input2" name="input2" value="" />
+                            <button type="submit" class="btn btn-dark" asp-page-handler="Consulta" asp-route-id="">
+                                Consultar
+                            </button>
+                        </ol>
+                    </div>
+                    <div class="col-sm-3">
+                        <ol class="breadcrumb float-sm-left">
+                            <button type="submit" class="btn btn-danger" asp-page-handler="proc_persuasivo" asp-route-id="">
+                                Pasar a Persuasivo
+                            </button>
+                        </ol>
+                    </div>
+                </div>
+            </form>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <form asp-action="Index" method="get">
+                            <div class="card-header" style="background-color:#112366">
+                                <h3 class="card-title" style="color:white">Comparendos para Persuasivo</h3>
+                            </div>
+                        </form>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Comparendo</th>
+                                        <th>Cedula</th>
+                                        <th>Fecha Multa</th>
+                                        <th>Fecha Sancion</th>
+                                        <th>Infraccion</th>
+                                        <th>Valor Multa</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+</div>
+
+@code
+{
+}

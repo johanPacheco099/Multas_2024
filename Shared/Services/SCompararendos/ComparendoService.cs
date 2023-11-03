@@ -25,8 +25,27 @@ namespace Multas.Shared.Services
 
         public async Task<Comparendos> Add(Comparendos comparendos)
         {
-            await _dbContext.AddAsync(comparendos);
-            await _dbContext.SaveChangesAsync();
+            try
+            {
+                // Intenta agregar el objeto comparendos a la base de datos
+                var ok = await _dbContext.AddAsync(comparendos);
+
+                if (ok != null)
+                {
+                    await _dbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    // Lanza una excepción con un mensaje de error personalizado
+                    throw new InvalidOperationException("No se pudo agregar el comparendo. Mensaje de error personalizado.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Lanza una excepción con el mensaje de error original
+                throw new Exception("Error al agregar el comparendo: " + ex.Message);
+            }
+
             return comparendos;
         }
 
@@ -41,13 +60,18 @@ namespace Multas.Shared.Services
                 try
                 {
                     await con.OpenAsync();
-                    
-                    var query = "SELECT * FROM \"Comparendos\"";
+
+                    var query = "SELECT * FROM \"comparendos\"";
                     comparendos = con.Query<Comparendos>(query).ToList();
                 }
-                catch (Exception ex)
+                catch (NpgsqlException ex)
                 {
-                    throw ex;
+                    // Aquí puedes realizar acciones adicionales, como registrar el error en un archivo de registro
+                    // o mostrar un mensaje de error más descriptivo al usuario.
+                    Console.WriteLine("Ocurrió un error al obtener los comparendos: " + ex.Message);
+
+                    // También puedes lanzar una nueva excepción personalizada si lo deseas.
+                    throw new Exception("Error al obtener los comparendos", ex);
                 }
                 finally
                 {
@@ -56,8 +80,8 @@ namespace Multas.Shared.Services
             }
 
             return comparendos;
-
         }
+
 
         public Task<Comparendos> UpdateMulta(int id)
         {
@@ -75,8 +99,6 @@ namespace Multas.Shared.Services
 
         }
 
-
-
         public async Task<List<Comparendos>> GetComparendosByCedula(string cedula)
         {
             var connectionString = GetConnection();
@@ -87,7 +109,7 @@ namespace Multas.Shared.Services
                 try
                 {
                     await con.OpenAsync();
-                    var query = "SELECT * FROM \"Comparendos\" WHERE cedula = @cedula";
+                    var query = "SELECT * FROM \"comparendos\" WHERE cedula = @cedula";
                     comparendosList = con.Query<Comparendos>(query, new { cedula }).ToList();
                 }
                 catch (Exception ex)

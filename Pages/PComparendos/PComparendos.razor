@@ -1,18 +1,18 @@
-﻿@using Multas.Models;
+﻿@page "/Comparendos"
+
+@using Multas.Models;
 @using Multas.Shared.Services;
 
 @inject IComparendoService ComparendoService;
 
-@page "/Comparendos"
-
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
+            <div class="row">
+                <div class="col-sm-11">
                     <h1>Comparendos</h1>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-1">
                     <ol class="breadcrumb float-sm-right">
                         <a href="/Comparendos/Add" class="btn btn-primary pull-right">Nuevo</a>
                     </ol>
@@ -26,73 +26,136 @@
                 <div class="col-12">
                     <div class="card">
                         <form asp-action="Index" method="get">
-                            <div class="card-header" style="background-color:#0080ff">
-                                <h2 class="card-title"></h2>
-                                <div class="card-tools">
-                                    <div class="input-group input-group-sm" style="width: 350px;">
-                                        <input type="text" id="buscarnit" name="searchString" class="form-control float-right" @bind="buscarnit"
-                                               placeholder="Buscar" />
-                                        <div class="input-group-append">
-                                            <button @onclick="findbycedula" class="bg-white border-0 h-100">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="primary" class="bi bi-search" viewBox="0 0 16 16">
-                                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
-                                                </svg>
-                                            </button>
+                            <div class="card-header" style="background-color: #112366">
+                                
+                              
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-8 ms-0">
+                                            <h5 class="text-white">Sanción de comparendos</h5>
                                         </div>
-                                        
-
+                                        <div class="col-md-4">
+                                            <div class="input-group input-group-sm" style="width: 350px;">
+                                                <input type="text" id="buscarnit" name="searchString" class="form-control float-right mb-2" @bind="buscarnit"
+                                                       placeholder="Buscar" />
+                                                <div class="input-group-append mb-2">
+                                                    <button @onclick="findbycedula" class="bg-white border-0 h-100">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="primary" class="bi bi-search" viewBox="0 0 16 16">
+                                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-
                                 </div>
                             </div>
                         </form>
-                        <div class="card-body table-responsive p-0">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Comparendo</th>
-                                        <th>Fecha</th>
-                                        <th>Cedula</th>
-                                        <th>Infraccion</th>
-                                        <th>Valor</th>
-                                        <td align="center"><b>Acciones</b></td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (comparendos != null)
-                                    {
-                                        @foreach (var comparendos in comparendos)
+                        <!-- Agregar una condición para mostrar u ocultar la tabla -->
+                        @if (mostrarTabla)
+                        {
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Comparendo</th>
+                                            <th>Fecha</th>
+                                            <th>Hora</th>
+                                            <th>Cedula</th>
+                                            <th>Infraccion</th>
+                                            <th>Valor</th>
+                                            <td align="center"><b>Acciones</b></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (comparendos != null)
                                         {
-
+                                            @foreach (var comparendo in comparendos)
+                                            {
+                                                <tr>
+                                                    <td>@comparendo.id</td>
+                                                    <td>@comparendo.comparendo</td>
+                                                    <td>@comparendo.fecha</td>
+                                                    <td>@comparendo.hora</td>
+                                                    <td>@comparendo.cedula</td>
+                                                    <td>@comparendo.infraccion</td>
+                                                    <td>@comparendo.valor</td>
+                                                    <td align="center">
+                                                        <form method="post">
+                                                            <a class="btn btn-primary" asp-page="/comparendos/Edit"
+                                                               asp-route-id="@comparendo.id">Editar</a> |
+                                                            <button type="submit" class="btn btn-danger" asp-page-handler="Delete"
+                                                                    asp-route-id="@comparendo.id"
+                                                                    onclick="return confirm('¿Estás seguro de eliminar este comparendo @comparendo.comparendo ?');">
+                                                                Eliminar
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
                                             <tr>
-                                                <td>@comparendos.id</td>
-                                                <td>@comparendos.comparendo</td>
-                                                <td>@comparendos.fecha.Date.ToString("dd-MM-yyyy")</td>
-                                                <td>@comparendos.cedula</td>
-                                                <td>@comparendos.infraccion</td>
-                                                <td>@comparendos.valor</td>
-                                                <td align="center">
-                                                    <form method="post">
-                                                        <a class="btn btn-primary" asp-page="/comparendos/Edit"
-                                                            asp-route-id="@comparendos.id">Editar</a> |
-                                                        <button type="submit" class="btn btn-danger" asp-page-handler="Delete"
-                                                            asp-route-id="@comparendos.id"
-                                                            onclick="return confirm('¿Estás seguto de eliminar este comparendo  @comparendos.comparendo ?');">Eliminar</button>
-                                                    </form>
-                                                </td>
+                                                <td colspan="7">No hay comparendos actualmente.</td>
                                             </tr>
                                         }
-                                    }
-                                    else
-                                    {
-                                        <tr>
-                                            <td colspan="7">No hay comparendos actualmente.</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- Mostrar los resultados de la búsqueda aquí -->
+                            <div class="card-body">
+                                @if (comparendos != null && comparendos.Count > 0)
+                                {
+                                    <h3>Resultados de la búsqueda:</h3>
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Comparendo</th>
+                                                <th>Fecha</th>
+                                                <th>Cedula</th>
+                                                <th>Infraccion</th>
+                                                <th>Valor</th>
+                                                <td align="center"><b>Acciones</b></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var comparendo in comparendos)
+                                            {
+                                                <tr>
+                                                    <td>@comparendo.id</td>
+                                                    <td>@comparendo.comparendo</td>
+                                                    <td>@comparendo.fecha</td>
+                                                    <td>@comparendo.cedula</td>
+                                                    <td>@comparendo.infraccion</td>
+                                                    <td>@comparendo.valor</td>
+                                                    <td align="center">
+                                                        <form method="post">
+                                                            <a class="btn btn-primary" asp-page="/comparendos/Edit"
+                                                               asp-route-id="@comparendo.id">Editar</a> |
+                                                            <button type="submit" class="btn btn-danger" asp-page-handler="Delete"
+                                                                    asp-route-id="@comparendo.id"
+                                                                    onclick="return confirm('¿Estás seguro de eliminar este comparendo @comparendo.comparendo ?');">
+                                                                Eliminar
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+                                else
+                                {
+                                    <p>No se encontraron resultados.</p>
+                                }
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -101,19 +164,18 @@
 </div>
 
 @code {
+    //ignorar mostrar tabla, trato de al buscar por cedula solo salgan los comparendos por esa cedula.
+    private bool mostrarTabla = true;
     private string buscarnit;
-
     private Comparendos comparendosobj = new Comparendos();
-
     private List<Comparendos> comparendos { get; set; }
 
+    //al inicializar la pagina, entonces para que cuando se abra la página ya estén los comparendos. 
     protected override async Task OnInitializedAsync()
     {
         comparendos = (await ComparendoService.GetAll()).ToList();
     }
 
-
-   
     private async Task findbycedula()
     {
         Console.WriteLine($"Valor de buscarnit: {buscarnit}");
@@ -127,10 +189,10 @@
             {
                 Console.WriteLine($"ID: {comparendo.id}");
                 Console.WriteLine($"Comparendo: {comparendo.comparendo}");
-                Console.WriteLine($"Fecha: {comparendo.fecha.Date.ToString("dd-MM-yyyy")}");
-                Console.WriteLine($"Cedula: {comparendo.cedula}");
-                Console.WriteLine($"Infraccion: {comparendo.infraccion}");
-                Console.WriteLine($"Valor: {comparendo.valor}");
+                // Otras propiedades aquí...
+
+                // Mostrar resultados, ocultar la tabla de comparendos
+                mostrarTabla = false;
             }
 
             comparendos = comparendosList;
@@ -139,8 +201,7 @@
         {
             comparendos = new List<Comparendos>(); // Limpia la lista de comparendos si no se encontraron resultados
             Console.WriteLine("No se encontraron resultados.");
+            mostrarTabla = true; // Mostrar la tabla nuevamente si no se encontraron resultados
         }
     }
-
-
 }

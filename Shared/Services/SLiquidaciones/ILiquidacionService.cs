@@ -4,8 +4,8 @@ namespace Multas.Shared.Services.SLiquidacion
 {
     public interface ILiquidacionService
     {
-        Task<List<Recibos>> GetRecibos(string comparendo);
-        Task<int> GenerarAcuerdoAsync(int h, string pcomp, string pcedula, DateTime pfecha, string pvalor, string pinicial, string pinteres, string pvlr_acuerdo, string pcuotas, string pvlr_recibo);
+        Task<List<Recibos>> GetRecibos();
+        Task<int> GenerarAcuerdo(int h, string pcomp, string pcedula, DateTime pfecha, string pvalor, string pinicial, string pinteres, string pvlr_acuerdo, string pcuotas, string pvlr_recibo);
         Task<int> GenerarRecibo(int h, string pcomparendo, string pcedula, string pvalor, string pinteres, string pdescuento, string pacuerdo, string precibo);
         Task<int> Add(Resoluciones resoluciones);
         Task<List<Resoluciones>> GetResol(string comparendo);

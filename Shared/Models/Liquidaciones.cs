@@ -28,6 +28,7 @@ namespace Multas.Models
         public string presol { get; set; }
         public string pplaca { get; set; }
         public string comparendo { get; set; }
+
         [Column(TypeName = "decimal(18, 2)")]
         public double pvlr_recibo { get; set; }
         public double pvlr_adicional { get; set; }

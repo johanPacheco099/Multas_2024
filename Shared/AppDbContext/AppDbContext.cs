@@ -17,7 +17,7 @@ public class AppDbContext : DbContext
     public DbSet<Intereses> intereses { get; set; }
     public DbSet<Infractores> infractores { get; set; }
     public DbSet<Infracciones> infracciones { get; set; }
-    public DbSet<Comparendos> Comparendos { get; set; }
+    public DbSet<Comparendos> comparendos { get; set; }
     public DbSet<Coactivos> coactivos { get; set; }
     
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
@@ -29,6 +29,6 @@ public class AppDbContext : DbContext
         {
             // Configura la cadena de conexión a tu base de datos PostgreSQL
 
-            optionsBuilder.UseNpgsql("Host=localhost;Database=multas_web;Username=postgres;Password=1098825894");
+            optionsBuilder.UseNpgsql("Host=localhost;Database=multas;Username=postgres;Password=1098825894");
         }
 }

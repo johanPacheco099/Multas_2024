@@ -1,0 +1,311 @@
+﻿@page "/Parametros"
+
+    <div class="content-wrapper">
+        <section class="content-header"></section>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <!-- left column -->
+                    <div class="col-md-12">
+                        <div class="card card-primary">
+                            <div class="card-header" style="background-color:#0080ff">
+                                <h3 class="card-title" style="color:white">Parametros Del Sistema</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <form method="post">
+
+                                <ul class="nav nav-tabs" id="custom-content-below-tab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="pestañaLiquidacion" data-toggle="pill" href="#contenidoLiquidacion" role="tab" aria-controls="contenidoLiquidacion" aria-selected="true">Generales</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pestañaPagos" data-toggle="pill" href="#contenidoPagos" role="tab" aria-controls="contenidoPagos" aria-selected="false">Acuerdos De Pago</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pestañaResoluciones" data-toggle="pill" href="#custom-content-below-messages" role="tab" aria-controls="custom-content-below-messages" aria-selected="false">Otros Parametros</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pestañaAcuerdosDePagos" data-toggle="pill" href="#contenidoAcuerdosDePago" role="tab" aria-controls="contenidoAcuerdosDePago" aria-selected="false">Cobro Coactivo</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pestañaCobroCoactivo" data-toggle="pill" href="#contenidoCobroCoactivo" role="tab" aria-controls="contenidoCobroCoactivo" aria-selected="false">Procceso Contravensional</a>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content" id="custom-content-below-tabContent">
+                                <div class="tab-pane fade show active" id="contenidoLiquidacion" role="tabpanel" aria-labelledby="pestañaLiquidacion">
+
+                                    <div class="card-body">
+                                        <hr color="lightgray" style="background-color:ghostwhite" size=3>
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <div class="form-group">
+                                                    <label>Secretaria</label>
+                                                    <input type="text" class="form-control col-md-7 col-auto" asp-for="parametros.Nombre">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <div class="form-group">
+                                                    <label>Ciudad</label>
+                                                    <input type="text" class="form-control" asp-for="parametros.Ciudad">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label>Direccion</label>
+                                                    <input type="text" asp-for="parametros.Dir" class="form-control col-auto">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label>Nit</label>
+                                                    <input type="text" asp-for="parametros.Nit" class="form-control col-auto">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label>Correo</label>
+                                                    <input type="text" asp-for="parametros.Correo" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label>Telefono</label>
+                                                    <input type="text" asp-for="parametros.Tel" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label>Codigo Divipo</label>
+                                                    <input type="text" asp-for="parametros.Divipo" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label>Valor Recibo</label>
+                                                    <input type="text" asp-for="parametros.Vlr_recibo" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label>Terminacion Ley De Descuento</label>
+                                                    <input type="date" asp-for="parametros.Fin_nueva_ley" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label>Fecha Inicio Cobro Interés</label>
+                                                    <input type="date" asp-for="parametros.Fec_ini_interes" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label>Dscto ley 1450 Comp antes del</label>
+                                                    <input type="date" asp-for="parametros.Fecha_Nueva_ley" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="tab-pane fade" id="contenidoPagos" role="tabpanel" aria-labelledby="pestañaResoluciones">
+                                    <div class="card-body">
+                                        <hr color="lightgray" style="background-color:ghostwhite" size=3>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label>Porcentaje  Financiación</label>
+                                                <select id="cars" class="form-control col-auto" asp-for="parametros.Tipo_inicial">
+                                                    <option value="1">Porcentaje</option>
+                                                     <option value="2">Valor</option>
+                                                 </select>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                        <label>Cuota Inicial</label>
+                                                        <input type="text" class="form-control" asp-for="parametros.Porc_min_fin">
+                                                </div>
+                                            </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label>Numero Cuotas Financiacion</label>
+                                                        <input type="text" asp-for="parametros.Cuotas_finan" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" asp-for="parametros.Incumplio" type="checkbox">
+                                                        <label class="form-check-label">No Financiar Si Incumplio Acuerdo</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="tab-pane fade" id="custom-content-below-messages" role="tabpanel" aria-labelledby="pestañaResoluciones">
+
+                                        <div class="card-body">
+                                            <hr color="lightgray" style="background-color:ghostwhite" size=3>
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" asp-for="parametros.Bloquea_hora" type="checkbox">
+                                                        <label class="form-check-label">Bloqueo De Horarios a Usuarios</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-4">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" asp-for="parametros.Susp_lic" type="checkbox">
+                                                        <label class="form-check-label">Suspencion De Licencia Automatico</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-4">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" asp-for="parametros.Cobra_Adicional" type="checkbox">
+                                                        <label class="form-check-label">Cobra Vakor Adicional</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label>Minutos De Inactividad</label>
+                                                        <input type="text" asp-for="parametros.Min_inactivo" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="contenidoAcuerdosDePago" role="tabpanel" aria-labelledby="pestañaAcuerdosDePagos">
+
+                                        <div class="card-body">
+                                            <hr color="lightgray" style="background-color:ghostwhite" size=3>
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label>No Dias Pasar a Persuasivo</label>
+                                                        <input type="text" class="form-control col-md-3" asp-for="parametros.Dias_persuasivo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label>No Dias Pasar a Coactivo</label>
+                                                        <input type="text" class="form-control" asp-for="parametros.Dias_coactivo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label>No Dias Calculo Fecha Mandamiento</label>
+                                                        <input type="text" asp-for="parametros.Dias_mdto" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" asp-for="parametros.Coactivo_man" type="checkbox">
+                                                        <label class="form-check-label">Resolucion Manual</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" asp-for="parametros.Costas" type="checkbox">
+                                                        <label class="form-check-label">Costas De Proceso</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="contenidoCobroCoactivo" role="tabpanel" aria-labelledby="pestañaCobroCoactivo">
+
+                                        <div class="card-body">
+                                            <hr color="lightgray" style="background-color:ghostwhite" size=3>
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label>Dias Constancia Secretaria</label>
+                                                        <input type="text" class="form-control col-md-3" asp-for="parametros.Dh_fecha1">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label>Dias Constancia Director</label>
+                                                        <input type="text" class="form-control" asp-for="parametros.Dh_fecha2">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label>Dias Fijar Edicto</label>
+                                                        <input type="text" asp-for="parametros.Dh_fecha3" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label>Dias Desfijar Edicto</label>
+                                                        <input type="text" asp-for="parametros.Dh_fecha4" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label>Dias Fecha Sancion</label>
+                                                        <input type="text" asp-for="parametros.Dh_fecha6" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label>Dias Auto Ejecutoria</label>
+                                                        <input type="text" asp-for="parametros.Dh_fecha5" class="form-control">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-7">
+                                                    <h3 style="color:red">Los Dias son Calendario, y se toman apartir de la fecha del comparendo </h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="card-footer">
+                                        <div class="container-fluid">
+                                            <div class="row mb-2">
+                                                <div class="col-sm-6">
+                                                    <button type="submit" class="btn btn-primary pull-right">Guardar</button>
+                                                    <input type="hidden" asp-for="parametros.Id" />
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <ol class="breadcrumb float-sm-right">
+                                                        <a asp-page="Parametros/Index" class="btn btn-primary pull-right">Atras</a>
+                                                    </ol>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>

@@ -1,13 +1,12 @@
 ﻿@using Multas.Models;
 @using Multas.Shared.Services;
 @using System.ComponentModel.DataAnnotations;
+@using System.Reflection;
+@inject IJSRuntime JSRuntime
 @inject IComparendoService ComparendoService
 
 @page "/Comparendos/Add"
 
-
-
-<h3>Add Comparendo</h3>
 
 <div class="content-wrapper">
     <section class="content-header"></section>
@@ -17,13 +16,13 @@
                 <!-- left column -->
                 <div class="col-md-12">
                     <div class="card card-primary">
-                        <div class="card-header" style="background-color:#0080ff">
+                        <div class="card-header" style="background-color:#112366">
                             <h3 class="card-title" style="color:white">Agregando Comparendos</h3>
                         </div>
                         <!-- /.card-header -->
                         <!-- form start -->
                         <!--"arrroba"Nombredelmodelo-->
-                        <EditForm Model="@comparendos" OnValidSubmit="AddMulta">
+                        <EditForm Model="@comparendos">
 
                             <div class="card-body">
                                 <div class="row">
@@ -34,11 +33,11 @@
                                         </div>
                                     </div>
                                    <div class="col-sm-3">
-    <div class="form-group">
-        <label for="lHora">Hora (hh:mm AM/PM)</label>
-        <input type="text" class="form-control col-auto" @bind="comparendos.hora" id="lHora" placeholder="hh:mm AM/PM">
-    </div>
-</div>
+                                       <div class="form-group">
+                                           <label for="lHora">Hora (hh:mm AM/PM)</label>
+                                           <input type="text" class="form-control col-auto" @bind="comparendos.hora" id="lHora" placeholder="hh:mm AM/PM">
+                                       </div>
+                                   </div>
 
                                     <div class="col-sm-3">
                                         <div class="form-group">
@@ -57,12 +56,14 @@
                                             </select>
                                         </div>
                                     </div>
+
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label for="lComparendo">Comparendo</label>
                                             <input type="text" class="form-control col-auto" @bind="comparendos.comparendo" id="lComparendo">
                                         </div>
                                     </div>
+
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-3">
@@ -233,17 +234,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-footer">
+                            <div class="card-footer bg-white">
                                 <div class="container-fluid">
-                                    <div class="row mb-2">
-                                        <div class="col-sm-6">
-                                            <button type="submit" class="btn btn-primary pull-right">Guardar</button>
-                                            <input type="hidden" @bind="comparendos.id" id="lId" />
-                                        </div>
-                                        <div class="col-sm-6">
+                                    <div class="row mt-3">
+                                        <div class="col-sm-8">
                                             <ol class="breadcrumb float-sm-right">
-                                                <a asp-page="/Comparendos/Index" class="btn btn-primary pull-right">Atras</a>
+                                                <a href="/Comparendos" class="btn btn-primary pull-right">Atras</a>
                                             </ol>
+                                        </div>
+                                        <div class="col-sm-4 text-center">
+                                            <button @onclick="AddMulta" class="btn btn-primary pull-right">Guardar</button>
+
+                                            <input type="hidden" @bind="comparendos.id" id="lId" />
                                         </div>
                                     </div>
                                 </div>
@@ -259,39 +261,97 @@
 </div>
 
 @code {
-    Comparendos comparendos = new Comparendos
+
+
+    public Comparendos comparendos { get; set; } = new Comparendos
     {
-        fecha = DateTime.Now,
+        fecha = DateTime.Now 
     };
+
+
 
     public string errorMessage { get; set; }
     //error al agregar comparendo si es fecha de hoy.
+
+
+    private void ClearForm()
+    {
+        comparendos = new Comparendos
+        {
+            fecha = DateTime.Now // Restablecer la fecha inicial en la fecha actual
+        };
+        errorMessage = null; 
+    }
+
+
+    private void OnFechaInputValueChanged(ChangeEventArgs e)
+    {
+        string fechaInput = e.Value.ToString();
+        if (DateTime.TryParse(fechaInput, out DateTime fechaParseada))
+        {
+            comparendos.fecha = fechaParseada;
+        }
+    }
+
     protected async Task AddMulta()
     {
-        try
+        if (IsValid(comparendos))
         {
-            if (IsValid())
+            try
             {
-                comparendos.fecha = DateTime.SpecifyKind(comparendos.fecha, DateTimeKind.Utc);
-                await ComparendoService.Add(comparendos);
+                DateTime fechaUtc = DateTime.SpecifyKind(comparendos.fecha, DateTimeKind.Utc);
 
-       
+                comparendos.fecha = fechaUtc;
+
+                // Aquí debes llamar a tu servicio para agregar el comparendo
+                await ComparendoService.Add(comparendos);
+                await JSRuntime.InvokeVoidAsync("alert", "Comparendo agregado con exito");
+                ClearForm();
+
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"Error al agregar el comparendo: {ex.Message}";
             }
         }
-        catch (Exception ex)
+        else
         {
-            
-            errorMessage = $"Error al agregar el comparendo: {ex.Message}";
+            await JSRuntime.InvokeVoidAsync("alert", "No se pueden crear comparendos con campos vacíos");
         }
     }
-
-    private bool IsValid()
+    private bool IsValid(Comparendos comparendo)
     {
-        var context = new ValidationContext(comparendos, serviceProvider: null, items: null);
-        var results = new List<ValidationResult>();
+        PropertyInfo[] properties = comparendo.GetType().GetProperties();
+        List<string> propertiesToValidate = new List<string>
+        {
+            "fecha",
+            "hora",
+            "mun",
+            "cedula",
+            "comparendo",
+            "tipo_servicio",
+            "tipo_infractor",
+            "clase_veh",
+            "placa",
+        };
+        foreach (PropertyInfo property in properties)
+        {
+            // Validar que los campos de tipo string no sean nulos o vacíos
+            if (propertiesToValidate.Contains(property.Name)&& property.PropertyType == typeof(string))
+            {
+                string value = (string)property.GetValue(comparendo);
+                if (string.IsNullOrEmpty(value))
+                {
+                    errorMessage = $"El campo '{property.Name}' es obligatorio.";
+                    Console.WriteLine($"No se puede crear un comparendo sin {property.Name}.");
+                    return false;
+                }
+            }
 
-        bool isValid = Validator.TryValidateObject(comparendos, context, results, validateAllProperties: true);
+            // Aquí puedes agregar más validaciones para otros tipos de campos si es necesario
+        }
 
-        return isValid;
+        return true;
     }
+
 }

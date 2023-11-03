@@ -318,39 +318,28 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    @try
+                                                                    @if (reciboslist != null && reciboslist.Any())
                                                                     {
-                                                                        if (reciboslist != null && reciboslist.Count > 0)
-                                                                        {
-                                                                            foreach (var reciboslist1 in reciboslist)
-                                                                            {
-                                                                                <tr>
-                                                                                    <td>@reciboslist1.id</td>
-                                                                                    <td>@reciboslist1.fecha</td>
-                                                                                    <td>@reciboslist1.fecpago</td>
-                                                                                    <td>@reciboslist1.interes_mora</td>
-                                                                                    <td>@reciboslist1.valor</td>
-                                                                                    <td align="center">
-                                                                                    </td>
-                                                                                </tr>
-                                                                            }
-                                                                        }
-                                                                        else
+                                                                        @foreach (var reciboslist1 in reciboslist)
                                                                         {
                                                                             <tr>
-                                                                                <td colspan="6">Está vacía la lista de recibos</td>
+                                                                                <td>@reciboslist1.id</td>
+                                                                                <td>@reciboslist1.fecha</td>
+                                                                                <td>@reciboslist1.fecpago</td>
+                                                                                <td>@reciboslist1.interes_mora</td>
+                                                                                <td>@reciboslist1.valor</td>
+                                                                                <td align="center">
+                                                                                </td>
                                                                             </tr>
                                                                         }
                                                                     }
-                                                                    catch
+                                                                    else
                                                                     {
                                                                         <tr>
-                                                                            <td colspan="6">Error al procesar la lista de recibos</td>
+                                                                            <td colspan="6">Está vacía la lista de recibos o ha ocurrido un error al obtenerlos.</td>
                                                                         </tr>
                                                                     }
                                                                 </tbody>
-
-
                                                             </table>
                                                         </div>
                                                     </div>
@@ -556,8 +545,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-
-       // liquidacion = await LiquidacionService.GetRecibos();   
+        reciboslist = (await LiquidacionService.GetRecibos()).ToList();
     }
 
 }
