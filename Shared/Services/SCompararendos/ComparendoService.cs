@@ -1,7 +1,12 @@
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Multas.Models;
+using Multas.Pages.PInfracciones;
+using Multas.Pages.PParametros;
 using Npgsql;
+using NpgsqlTypes;
+using System.Data;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Multas.Shared.Services
 {
@@ -82,20 +87,51 @@ namespace Multas.Shared.Services
             return comparendos;
         }
 
-
-        public Task<Comparendos> UpdateMulta(int id)
+        public async Task<Comparendos> UpdateMulta(int id, Comparendos updatedComparendo)
         {
-            throw new NotImplementedException();
+            var existingComparendo = await _dbContext.comparendos.FirstOrDefaultAsync(c => c.id == id);
+
+            if (existingComparendo != null)
+            {
+                // Aquí actualizas los campos del comparendo existente con los valores del comparendo actualizado.
+                existingComparendo.comparendo = updatedComparendo.comparendo;
+                existingComparendo.fecha = updatedComparendo.fecha;
+                existingComparendo.hora = updatedComparendo.hora;
+                existingComparendo.cedula = updatedComparendo.cedula;
+                existingComparendo.infraccion = updatedComparendo.infraccion;
+                existingComparendo.valor = updatedComparendo.valor;
+
+                await _dbContext.SaveChangesAsync();
+
+                return existingComparendo;
+            }
+            else
+            {
+                throw new FileNotFoundException($"Comparendo con ID {id} no encontrado.");
+            }
         }
+
 
         public int DeleteComparendos(int id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task GetMultasById(int id)
+        public async Task<Comparendos> GetMultasById(int id)
         {
-            var comparendo = await _dbContext.FindAsync<Comparendos>(id);
+            try
+            {
+                var comparendo = await _dbContext.FindAsync<Comparendos>(id);
+                return comparendo;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
+
 
         }
 
@@ -126,5 +162,57 @@ namespace Multas.Shared.Services
         }
 
 
+
+        public async Task<double> calculoUvts(DateTime pfecha, string pinfraccion, int pgrado, int preincide)
+        {
+            try
+            {
+                var connectionString = GetConnection();
+
+                using var connection = new NpgsqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                var cmd = new NpgsqlCommand();
+                cmd.CommandText = "SELECT public.calc_inf(@pfecha, @infrac, @pgrado, @preincide)";
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = connection;
+
+                // Configura los parámetros
+                cmd.Parameters.Add(new NpgsqlParameter("@pfecha", NpgsqlDbType.Date) { Value = pfecha });
+                cmd.Parameters.Add(new NpgsqlParameter("@infrac", NpgsqlDbType.Text) { Value = pinfraccion });
+                cmd.Parameters.Add(new NpgsqlParameter("@pgrado", NpgsqlDbType.Integer) { Value = pgrado });
+                cmd.Parameters.Add(new NpgsqlParameter("@preincide", NpgsqlDbType.Integer) { Value = preincide });
+
+                // Utiliza ExecuteScalarAsync para obtener el valor de retorno
+                var result = await cmd.ExecuteScalarAsync();
+
+                if (result != null && result != DBNull.Value)
+                {
+                    // Convierte el resultado a double
+                    if (double.TryParse(result.ToString(), out double doubleValue))
+                    {
+                        Console.WriteLine($"Valor de retorno (double): {doubleValue}");
+                        return doubleValue;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error al convertir el resultado a double");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("El resultado es nulo o DBNull");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                // Puedes manejar el error según tus necesidades, por ejemplo, lanzar una excepción o devolver un valor predeterminado.
+            }
+
+            // Si hay un error, retorna un valor predeterminado o 0.0 según tus necesidades.
+            return 0.0;
+        }
     }
 }
+

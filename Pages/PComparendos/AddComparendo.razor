@@ -100,7 +100,7 @@
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label for="lInfraccion">Infraccion</label>
-                                            <input type="text" class="form-control col-auto" @bind="comparendos.infraccion" id="lInfraccion">
+                                            <input type="text" class="form-control col-auto" @bind="comparendos.infraccion" id="lInfraccion" oninput="@(async () => await EjecutarCalculoUvt())">
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
@@ -122,6 +122,15 @@
                                             <input type="text" @bind="comparendos.mun" class="form-control col-auto" id="lMunicipio">
                                         </div>
                                     </div>
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="Reincide">Reincide</label>
+                                                <input type="number" @bind="comparendos.reincide" class="form-control" id="lReincide" min="0" max="5">
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-3">
@@ -244,9 +253,14 @@
                                         </div>
                                         <div class="col-sm-4 text-center">
                                             <button @onclick="AddMulta" class="btn btn-primary pull-right">Guardar</button>
-
                                             <input type="hidden" @bind="comparendos.id" id="lId" />
                                         </div>
+                                        <!--
+                                               <div class="col-sm-4 text-center">
+                                            <button @onclick="Generarinf" class="btn btn-primary pull-right">GenerarInfraccion</button>
+                                            <input type="hidden" @bind="comparendos.id" id="lId" />
+                                        </div>
+                                        -->
                                     </div>
                                 </div>
                             </div>
@@ -262,12 +276,18 @@
 
 @code {
 
+    DateTime fechaHoy = DateTime.Now;
 
     public Comparendos comparendos { get; set; } = new Comparendos
     {
         fecha = DateTime.Now 
     };
 
+    private async Task Generarinf()
+    {
+        var ok = await ComparendoService.calculoUvts(fechaHoy, "C29", 0 , 0);
+        // Resto del código, si es necesario
+    }
 
 
     public string errorMessage { get; set; }
@@ -305,6 +325,7 @@
 
                 // Aquí debes llamar a tu servicio para agregar el comparendo
                 await ComparendoService.Add(comparendos);
+
                 await JSRuntime.InvokeVoidAsync("alert", "Comparendo agregado con exito");
                 ClearForm();
 
@@ -352,6 +373,50 @@
         }
 
         return true;
+    }
+
+
+
+    private async Task<double> CalcularValor(DateTime pfecha, string pinfraccion, int pgrado, int preincide)
+    {
+        Console.WriteLine($"fecha: {pfecha}");
+        Console.WriteLine($"Valor de pinfraccion: {pinfraccion}");
+        Console.WriteLine($"Valor alchoholemia: {pgrado}");
+        Console.WriteLine($"Valor de reincide: {preincide}");
+
+
+
+        var calcularUvt = await ComparendoService.calculoUvts(pfecha, pinfraccion, pgrado, preincide);
+
+        Console.WriteLine($"Valor de retorno: {calcularUvt}");
+        return calcularUvt;
+    }
+
+    private async Task EjecutarCalculoUvt()
+    {
+        await Task.Delay(1000);
+
+        // Usa await para esperar la tarea y obtener el resultado
+        double resultado = await CalcularValor(comparendos.fecha, comparendos.infraccion, comparendos.grado_alcol, comparendos.reincide);
+
+        // Asigna el resultado a la propiedad comparendos.valor
+        comparendos.valor = resultado;
+    }
+
+
+    private void IncrementarReincide()
+    {
+        if (comparendos.reincide < 5)
+        {
+            comparendos.reincide++;
+        }
+    }
+    private void DecrementarReincide()
+    {
+        if (comparendos.reincide > 0)
+        {
+            comparendos.reincide--;
+        }
     }
 
 }

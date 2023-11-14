@@ -70,5 +70,6 @@ namespace Multas.Models
         public int vel_per { get; set; }
         public int vel_medida { get; set; }
         public int mun { get; set; }
+        public short reincide { get; set; }
     }
 }

@@ -51,9 +51,6 @@
                                 </div>
                             </div>
                         </form>
-                        <!-- Agregar una condición para mostrar u ocultar la tabla -->
-                        @if (mostrarTabla)
-                        {
                             <div class="card-body table-responsive p-0">
                                 <table class="table table-striped">
                                     <thead>
@@ -83,13 +80,9 @@
                                                     <td>@comparendo.valor</td>
                                                     <td align="center">
                                                         <form method="post">
-                                                            <a class="btn btn-primary" asp-page="/comparendos/Edit"
-                                                               asp-route-id="@comparendo.id">Editar</a> |
-                                                            <button type="submit" class="btn btn-danger" asp-page-handler="Delete"
-                                                                    asp-route-id="@comparendo.id"
-                                                                    onclick="return confirm('¿Estás seguro de eliminar este comparendo @comparendo.comparendo ?');">
-                                                                Eliminar
-                                                            </button>
+                                                        <button class="btn btn-primary" data-toggle="modal" data-target="#detalleModal" @onclick="() => VerDetalle(comparendo.id)">
+                                                            Ver
+                                                        </button>
                                                         </form>
                                                     </td>
                                                 </tr>
@@ -103,59 +96,7 @@
                                         }
                                     </tbody>
                                 </table>
-                            </div>
-                        }
-                        else
-                        {
-                            <!-- Mostrar los resultados de la búsqueda aquí -->
-                            <div class="card-body">
-                                @if (comparendos != null && comparendos.Count > 0)
-                                {
-                                    <h3>Resultados de la búsqueda:</h3>
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Comparendo</th>
-                                                <th>Fecha</th>
-                                                <th>Cedula</th>
-                                                <th>Infraccion</th>
-                                                <th>Valor</th>
-                                                <td align="center"><b>Acciones</b></td>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach (var comparendo in comparendos)
-                                            {
-                                                <tr>
-                                                    <td>@comparendo.id</td>
-                                                    <td>@comparendo.comparendo</td>
-                                                    <td>@comparendo.fecha</td>
-                                                    <td>@comparendo.cedula</td>
-                                                    <td>@comparendo.infraccion</td>
-                                                    <td>@comparendo.valor</td>
-                                                    <td align="center">
-                                                        <form method="post">
-                                                            <a class="btn btn-primary" asp-page="/comparendos/Edit"
-                                                               asp-route-id="@comparendo.id">Editar</a> |
-                                                            <button type="submit" class="btn btn-danger" asp-page-handler="Delete"
-                                                                    asp-route-id="@comparendo.id"
-                                                                    onclick="return confirm('¿Estás seguro de eliminar este comparendo @comparendo.comparendo ?');">
-                                                                Eliminar
-                                                            </button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                }
-                                else
-                                {
-                                    <p>No se encontraron resultados.</p>
-                                }
-                            </div>
-                        }
+                            </div>                       
                     </div>
                 </div>
             </div>
@@ -163,24 +104,55 @@
     </section>
 </div>
 
+
+<div class="modal" id="detalleModal"  tabindex="-1" style="display: @(mostrarModal ? "block" : "none")">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Contenido del modal con los detalles del comparendo -->
+            <div class="modal-header">
+                <h5 class="modal-title">Detalles del Comparendo</h5>
+                <button type="button" class="close" @onclick="CerrarModal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Mostrar detalles del comparendo aquí -->
+                <p>ID: @comparendosobj.id</p>
+                <p>Comparendo: @comparendosobj.comparendo</p>
+                <!-- Otros detalles... -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @onclick="CerrarModal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 @code {
-    //ignorar mostrar tabla, trato de al buscar por cedula solo salgan los comparendos por esa cedula.
-    private bool mostrarTabla = true;
+    private bool mostrarModal = false;
     private string buscarnit;
     private Comparendos comparendosobj = new Comparendos();
     private List<Comparendos> comparendos { get; set; }
 
-    //al inicializar la pagina, entonces para que cuando se abra la página ya estén los comparendos. 
+
     protected override async Task OnInitializedAsync()
     {
-        comparendos = (await ComparendoService.GetAll()).ToList();
+        const int cantidadInicial = 5; 
+
+        var todosLosComparendos = await ComparendoService.GetAll();
+
+        if (todosLosComparendos != null && todosLosComparendos.Any())
+        {
+            comparendos = todosLosComparendos.Take(cantidadInicial).ToList();
+        }
     }
 
     private async Task findbycedula()
     {
         Console.WriteLine($"Valor de buscarnit: {buscarnit}");
         var comparendosList = await ComparendoService.GetComparendosByCedula(buscarnit);
-
         if (comparendosList != null && comparendosList.Count > 0)
         {
             Console.WriteLine($"comparendosobj se ha establecido correctamente: {comparendosList.Count} resultados");
@@ -189,19 +161,34 @@
             {
                 Console.WriteLine($"ID: {comparendo.id}");
                 Console.WriteLine($"Comparendo: {comparendo.comparendo}");
-                // Otras propiedades aquí...
-
-                // Mostrar resultados, ocultar la tabla de comparendos
-                mostrarTabla = false;
+                Console.WriteLine($"Fecha:{comparendo.fecha}");
+                Console.WriteLine($"Valor=>{comparendo.valor}");
             }
-
             comparendos = comparendosList;
         }
         else
         {
-            comparendos = new List<Comparendos>(); // Limpia la lista de comparendos si no se encontraron resultados
+            comparendos = new List<Comparendos>(); 
             Console.WriteLine("No se encontraron resultados.");
-            mostrarTabla = true; // Mostrar la tabla nuevamente si no se encontraron resultados
         }
+    }
+
+
+    private async Task VerDetalle(int comparendoId)
+    {
+        try
+        {
+            comparendosobj = await ComparendoService.GetMultasById(comparendoId);
+            mostrarModal = true;
+        }
+        catch (Exception ex)
+        {
+            // Manejar el error de manera adecuada (puedes usar logs o notificaciones)
+            Console.WriteLine($"Error al cargar detalles del comparendo: {ex.Message}");
+        }
+    }
+    private void CerrarModal()
+    {
+        mostrarModal = false;
     }
 }

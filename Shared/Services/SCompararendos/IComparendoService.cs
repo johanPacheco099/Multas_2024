@@ -9,11 +9,13 @@ namespace Multas.Shared.Services
         Task<List<Comparendos>> GetComparendosByCedula(string cedula);
         Task<List<Comparendos>> GetAll();
         //cambiar a int, dato devuelto
-        Task<Comparendos> UpdateMulta(int id);
+        Task<Comparendos> UpdateMulta(int id, Comparendos updtdedComparendo);
 
         int DeleteComparendos(int id);
 
-        Task GetMultasById(int id);
+        Task<Comparendos> GetMultasById(int id);
+
+        Task<double> calculoUvts(DateTime pfecha, string pinfraccion, int pgrado, int preincide);
         
     }   
 }
