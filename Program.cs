@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Multas.Data;
 using Multas.Shared.Services;
 using Multas.Shared.Services.SCoactivo;
+using Multas.Shared.Services.SInfracciones;
 using Multas.Shared.Services.SInteres;
 using Multas.Shared.Services.SLiquidacion;
 using Multas.Shared.Services.SUser;
@@ -18,6 +19,7 @@ builder.Services.AddScoped<ILiquidacionService , LiquidacionService>();
 builder.Services.AddScoped<IInteresService , InteresService>();
 builder.Services.AddScoped<ICoactivoService , CoactivoService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IInfraccionesService, InfraccionesService>();
 //builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddDbContext<AppDbContext>(ServiceLifetime.Scoped);
 

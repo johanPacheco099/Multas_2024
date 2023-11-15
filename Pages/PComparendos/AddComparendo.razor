@@ -2,8 +2,10 @@
 @using Multas.Shared.Services;
 @using System.ComponentModel.DataAnnotations;
 @using System.Reflection;
+@using Multas.Shared.Services.SInfracciones;
 @inject IJSRuntime JSRuntime
 @inject IComparendoService ComparendoService
+@inject IInfraccionesService InfraccionesService;
 
 @page "/Comparendos/Add"
 
@@ -32,12 +34,12 @@
                                             <input type="date" class="form-control col-auto" @bind="comparendos.fecha" id="lFecha">
                                         </div>
                                     </div>
-                                   <div class="col-sm-3">
-                                       <div class="form-group">
-                                           <label for="lHora">Hora (hh:mm AM/PM)</label>
-                                           <input type="text" class="form-control col-auto" @bind="comparendos.hora" id="lHora" placeholder="hh:mm AM/PM">
-                                       </div>
-                                   </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="lHora">Hora (hh:mm AM/PM)</label>
+                                            <input type="text" class="form-control col-auto" @bind="comparendos.hora" id="lHora" placeholder="hh:mm AM/PM">
+                                        </div>
+                                    </div>
 
                                     <div class="col-sm-3">
                                         <div class="form-group">
@@ -97,12 +99,21 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
+                                    <div class="col-sm-2">
+                                        <div class="">
                                             <label for="lInfraccion">Infraccion</label>
-                                            <input type="text" class="form-control col-auto" @bind="comparendos.infraccion" id="lInfraccion" oninput="@(async () => await EjecutarCalculoUvt())">
+                                            <input type="text" class="form-control" @bind="comparendos.infraccion" id="lInfraccion" @onblur="@(async () => { await EjecutarCalculoUvt(); await buscarNombreInfraccion(); })">
                                         </div>
                                     </div>
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <label for="Linfname">Nombre infracción:</label>
+                                            <input class="form-control col-12" type="text" readonly="readonly" value="@infracciones.nombre" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label for="lTipoServicio">Tipo Servicio</label>
@@ -126,11 +137,10 @@
                                         <div class="col-sm-3">
                                             <div class="form-group">
                                                 <label for="Reincide">Reincide</label>
-                                                <input type="number" @bind="comparendos.reincide" class="form-control" id="lReincide" min="0" max="5">
+                                                <input type="number" @bind="comparendos.reincide" class="form-control" id="lReincide" min="1" max="5">
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-3">
@@ -255,12 +265,10 @@
                                             <button @onclick="AddMulta" class="btn btn-primary pull-right">Guardar</button>
                                             <input type="hidden" @bind="comparendos.id" id="lId" />
                                         </div>
-                                        <!--
-                                               <div class="col-sm-4 text-center">
-                                            <button @onclick="Generarinf" class="btn btn-primary pull-right">GenerarInfraccion</button>
-                                            <input type="hidden" @bind="comparendos.id" id="lId" />
+                                        <div class="col-sm-4 text-center">
+                                            <button @onclick="buscarNombreInfraccion" class="btn btn-primary pull-right">buscarnombre</button>
                                         </div>
-                                        -->
+
                                     </div>
                                 </div>
                             </div>
@@ -278,17 +286,13 @@
 
     DateTime fechaHoy = DateTime.Now;
 
+    public Infracciones infracciones { get; set; } = new Infracciones(); // Inicializar infracciones
+
     public Comparendos comparendos { get; set; } = new Comparendos
-    {
-        fecha = DateTime.Now 
-    };
-
-    private async Task Generarinf()
-    {
-        var ok = await ComparendoService.calculoUvts(fechaHoy, "C29", 0 , 0);
-        // Resto del código, si es necesario
-    }
-
+        {
+            fecha = DateTime.Now,
+            reincide = 1,
+        };
 
     public string errorMessage { get; set; }
     //error al agregar comparendo si es fecha de hoy.
@@ -297,10 +301,10 @@
     private void ClearForm()
     {
         comparendos = new Comparendos
-        {
-            fecha = DateTime.Now // Restablecer la fecha inicial en la fecha actual
-        };
-        errorMessage = null; 
+            {
+                fecha = DateTime.Now // Restablecer la fecha inicial en la fecha actual
+            };
+        errorMessage = null;
     }
 
 
@@ -312,6 +316,8 @@
             comparendos.fecha = fechaParseada;
         }
     }
+
+
 
     protected async Task AddMulta()
     {
@@ -358,7 +364,7 @@
         foreach (PropertyInfo property in properties)
         {
             // Validar que los campos de tipo string no sean nulos o vacíos
-            if (propertiesToValidate.Contains(property.Name)&& property.PropertyType == typeof(string))
+            if (propertiesToValidate.Contains(property.Name) && property.PropertyType == typeof(string))
             {
                 string value = (string)property.GetValue(comparendo);
                 if (string.IsNullOrEmpty(value))
@@ -394,29 +400,49 @@
 
     private async Task EjecutarCalculoUvt()
     {
-        await Task.Delay(1000);
+        //para que la tarea espere 100milisegundos, pues si no está el valor,o sea el codigo de la infraccion no puede buscar ni traer el procedimiento calc_inf()
+        await Task.Delay(100);
 
         // Usa await para esperar la tarea y obtener el resultado
         double resultado = await CalcularValor(comparendos.fecha, comparendos.infraccion, comparendos.grado_alcol, comparendos.reincide);
+        //asigno nombreInfraccion al parametro infracciones.nombre para asi poder castearlo en el input.
+        string nombreInfraccion = await buscarNombreInfraccion();
+        infracciones.nombre = nombreInfraccion;
 
         // Asigna el resultado a la propiedad comparendos.valor
         comparendos.valor = resultado;
     }
 
-
-    private void IncrementarReincide()
+    private async Task<string> buscarNombreInfraccion()
     {
-        if (comparendos.reincide < 5)
+        string codigoInfraccion = comparendos.infraccion;
+        try
         {
-            comparendos.reincide++;
+            var infraccion = await InfraccionesService.GetNameInfraccionByCode(codigoInfraccion);
+
+            if (infraccion != null)
+            {
+                Console.WriteLine($"El nombre de la infracción es: {infraccion}");
+                StateHasChanged(); // Agrega esta línea si es necesario actualizar la interfaz de usuario
+                infracciones.nombre = infraccion;
+                Console.WriteLine($"El nombre de la infraccion desde el metodo es:{infracciones.nombre}");
+
+                return infraccion; // Devuelve el nombre de la infracción
+            }
+            else
+            {
+                // Manejar el caso en que GetNameInfraccionByCode devuelva null
+                Console.WriteLine("La infracción no fue encontrada.");
+                return string.Empty; // O cualquier otro valor predeterminado
+            }
+            return infraccion;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al buscar nombre de infracción: {ex.Message}";
+            StateHasChanged(); // Agrega esta línea si es necesario actualizar la interfaz de usuario con un mensaje de error
+
+            return string.Empty; // O cualquier otro valor predeterminado
         }
     }
-    private void DecrementarReincide()
-    {
-        if (comparendos.reincide > 0)
-        {
-            comparendos.reincide--;
-        }
-    }
-
 }

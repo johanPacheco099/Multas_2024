@@ -7,6 +7,7 @@ using Npgsql;
 using NpgsqlTypes;
 using System.Data;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Infracciones = Multas.Models.Infracciones;
 
 namespace Multas.Shared.Services
 {
@@ -130,9 +131,6 @@ namespace Multas.Shared.Services
 
                 throw;
             }
-            
-
-
         }
 
         public async Task<List<Comparendos>> GetComparendosByCedula(string cedula)
@@ -213,6 +211,8 @@ namespace Multas.Shared.Services
             // Si hay un error, retorna un valor predeterminado o 0.0 según tus necesidades.
             return 0.0;
         }
+
+        
     }
 }
 

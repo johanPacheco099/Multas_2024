@@ -8,8 +8,7 @@ public class AppDbContext : DbContext
     public DbSet<Tipos_nov> tipos_nov { get; set; }
     public DbSet<Sanciones> sanciones { get; set; }
     public DbSet<Resoluciones> resoluciones { get; set; }
-    public DbSet<Recibos> recibos { get; set; }
-    
+    public DbSet<Recibos> recibos { get; set; }    
     public DbSet<Procesos> procesos { get; set; }
     public DbSet<Persuasivos> persuasivos { get; set; }
     public DbSet<Parametros> parametros { get; set; }
