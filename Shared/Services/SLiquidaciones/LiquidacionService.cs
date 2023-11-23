@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Multas.Models;
 using Npgsql;
+using NpgsqlTypes;
+using System.Data;
 
 namespace Multas.Shared.Services.SLiquidacion
 {
@@ -27,9 +29,32 @@ namespace Multas.Shared.Services.SLiquidacion
             return 1;
         }
 
-        public Task<int> GenerarAcuerdo(int h, string pcomp, string pcedula, DateTime pfecha, string pvalor, string pinicial, string pinteres, string pvlr_acuerdo, string pcuotas, string pvlr_recibo)
+        public async Task<int> GenerarAcuerdo(int h, string pcomp, string pcedula, DateTime pfecha, string pvalor, string pinicial, string pinteres, string pvlr_acuerdo, string pcuotas, string pvlr_recibo)
         {
-            throw new NotImplementedException();
+            var connectionString = this.GetConnection();
+            var count = 0;
+
+            using (var con = new NpgsqlConnection(connectionString))
+            {
+                try
+                {
+                    await con.OpenAsync(); // Utiliza OpenAsync para una operación asincrónica
+
+                    var query = "select from graba_acuerdo('" + pcomp + "','" + pcedula + "','" + pfecha + "', '" + pvalor + "', '" + pinicial + "', '" + pinteres + "', '" + pvlr_acuerdo + "', '" + pcuotas + "', '" + pvlr_recibo + "')";
+
+                    count = await con.ExecuteAsync(query); // Utiliza ExecuteAsync para una operación asincrónica
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    con.Close();
+                }
+
+                return count;
+            }
         }
 
         public Task<int> GenerarRecibo(int h, string pcomparendo, string pcedula, string pvalor, string pinteres, string pdescuento, string pacuerdo, string precibo)
@@ -42,36 +67,56 @@ namespace Multas.Shared.Services.SLiquidacion
             throw new NotImplementedException();
         }
 
-        public Task<Liquidaciones> GetComp(string compa)
+        public async Task<Liquidaciones> GetComparendo(string compa)
         {
-            throw new NotImplementedException();
+            var connectionString = this.GetConnection();
+            Models.Liquidaciones liquidaciones = new Models.Liquidaciones();
+
+            using (var con = new NpgsqlConnection(connectionString))
+            {
+                try
+                {
+                    con.Open();
+                    var query = "SELECT * FROM liquidacion('" + compa + "')";
+                    liquidaciones = con.Query<Liquidaciones>(query).FirstOrDefault();
+                    Console.WriteLine(liquidaciones.pnombre);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    con.Close();
+                }
+                return liquidaciones;
+            }
         }
-        public async Task<List<Recibos>> GetRecibos()
+
+        public async Task<List<Recibos>> GetRecibos(string comparendo)
         {
-            var connectionString = GetConnection();
+            var connectionString = this.GetConnection();
             List<Recibos> recibos = new List<Recibos>();
 
             using (var con = new NpgsqlConnection(connectionString))
             {
                 try
                 {
-                    await con.OpenAsync();
-
-                    var query = "SELECT * FROM \"liquidaciones\"";
-                    recibos = (await con.QueryAsync<Recibos>(query)).ToList();
+                    con.Open();
+                    var query = "SELECT * FROM recibos WHERE comparendo::varchar = '" + comparendo + "'";
+                    recibos = con.Query<Recibos>(query).ToList();
                 }
                 catch (Exception ex)
                 {
-                    // Manejar el error aquí (puedes registrar el error o tomar otras acciones según sea necesario)
-                    Console.WriteLine($"Error al obtener los recibos: {ex.Message}");
+                    throw ex;
                 }
                 finally
                 {
                     con.Close();
                 }
-            }
 
-            return recibos;
+                return recibos;
+            }
         }
 
 

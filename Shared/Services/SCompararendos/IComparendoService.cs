@@ -16,5 +16,6 @@ namespace Multas.Shared.Services
         Task<Comparendos> GetMultasById(int id);
 
         Task<double> calculoUvts(DateTime pfecha, string pinfraccion, int pgrado, int preincide);
+
     }   
 }

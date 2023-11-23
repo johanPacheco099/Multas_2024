@@ -166,15 +166,12 @@ namespace Multas.Shared.Services
             try
             {
                 var connectionString = GetConnection();
-
                 using var connection = new NpgsqlConnection(connectionString);
                 await connection.OpenAsync();
-
                 var cmd = new NpgsqlCommand();
                 cmd.CommandText = "SELECT public.calc_inf(@pfecha, @infrac, @pgrado, @preincide)";
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = connection;
-
                 // Configura los parámetros
                 cmd.Parameters.Add(new NpgsqlParameter("@pfecha", NpgsqlDbType.Date) { Value = pfecha });
                 cmd.Parameters.Add(new NpgsqlParameter("@infrac", NpgsqlDbType.Text) { Value = pinfraccion });
@@ -212,7 +209,6 @@ namespace Multas.Shared.Services
             return 0.0;
         }
 
-        
     }
 }
 

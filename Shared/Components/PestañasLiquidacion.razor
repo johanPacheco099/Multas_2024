@@ -1,0 +1,102 @@
+﻿@using Multas.Models;
+@using Multas.Shared.Services.SLiquidacion;
+@inject ILiquidacionService LiquidacionService
+
+
+
+
+
+
+@code {
+
+    private string compa { get; set; }
+
+    public Liquidaciones result { get; private set; }
+
+    public Liquidaciones liquidacion { get; set; } = new Liquidaciones(); // Initialize liquidacion
+
+    public List<Resoluciones> resolucioneslist { get; set; } = new List<Resoluciones>();
+
+    public List<Recibos> reciboslist { get; set; } = new List<Recibos>();
+
+    public List<Procesos> procesoslist { get; set; } = new List<Procesos>();
+
+    private bool tab1 = true;
+    private bool tab2 = false;
+    private bool tab3 = false;
+    private bool tab4 = false;
+    private bool tab5 = false;
+
+    public void displayTabs(int TabNumber)
+    {
+        switch (TabNumber)
+        {
+            case 1:
+                this.tab1 = true;
+                this.tab2 = false;
+                this.tab3 = false;
+                this.tab4 = false;
+                this.tab5 = false;
+                break;
+            case 2:
+                this.tab1 = false;
+                this.tab2 = true;
+                this.tab3 = false;
+                this.tab4 = false;
+                this.tab5 = false;
+                break;
+            case 3:
+                this.tab1 = false;
+                this.tab2 = false;
+                this.tab3 = true;
+                this.tab4 = false;
+                this.tab5 = false;
+                break;
+            case 4:
+                this.tab1 = false;
+                this.tab2 = false;
+                this.tab3 = false;
+                this.tab4 = true;
+                this.tab5=false;
+                break;
+            case 5:
+                this.tab1 = false;
+                this.tab2 = false;
+                this.tab3 = false;
+                this.tab4 = false;
+                this.tab5 = true;
+                break;
+        }
+
+    }
+
+
+    public async Task obtenerLiquidacionP(string compa)
+    {
+
+        try
+        {
+            result = await LiquidacionService.GetComparendo(compa);
+
+
+            if (result != null)
+            {
+                result.pvalor = liquidacion.pvalor;
+                result.pinteres_mora = liquidacion.pinteres_mora;
+                Console.WriteLine($"El resultado de liquidacion es: {result}");
+                this.result = result;
+            }
+            else
+            {
+
+                Console.WriteLine("El resultado de liquidacion es nulo.");
+            }
+        }
+        catch (Exception ex)
+        {
+            // Maneja la excepción
+            Console.WriteLine($"Error in GetComparendo: {ex.Message}");
+        }
+    }
+    
+}

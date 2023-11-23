@@ -1,50 +1,97 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Dataset Software</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+﻿<!DOCTYPE html>
+<html>
+    <body>
+    <div class="wrapper mt-5" style="background-color: #112366;">
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
+            <div class="navbar navbar-expand-lg navbar-light">
+                <h5 class="text-white">DatasetSoftware</h5>
+            </div>
 
-<div class="@NavMenuCssClass nav-scrollable " @onclick="ToggleNavMenu">  
-    <nav class="flex-column">
-        <h5 class="mt-4 ms-2 text-white">Básicos</h5>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Comparendos">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Comparendos
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Liquidaciones">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Liquidaciones
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Sanciones">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Sanciones
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Persuasivos">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Persuasivos
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Parametros">
-                <span class="oi oi-list-rich" aria-hidden="true"></span>Parametros
-            </NavLink>
-        </div>
-    </nav>
-</div>
+            <div class="nav-left-sidebar sidebar-dark mt-2">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle dropdown-toggle-end btn-block ms-3" style="width: 200px; background-color:#122159;" @onclick="ToggleNavMenu">
+                        Básicos
+                    </button>
+                    <div class="@($"{(collapseNavMenu ? "show" : "")} dropdown-menu")">
+                        <NavLink class="dropdown-item" href="/Comparendos">Comparendos</NavLink>
+                        <NavLink class="dropdown-item" href="/Infracciones">Infracciones</NavLink>
+                        <NavLink class="dropdown-item" href="/Infractores">Infractores</NavLink>
+                        <NavLink class="dropdown-item" href="/Tipos_Nov">Tipos Resoluciones</NavLink>
+                        <NavLink class="dropdown-item" href="/Liquidaciones">Liquidación</NavLink>
+                    </div>
+                </div>
+                <div class="menu-list mt-4">
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle btn-block ms-3" style="width: 200px; background-color:#122159" @onclick="ToggleNavMenu2">
+                            Básicos
+                        </button>
+                        <div class="@($"{(collapseNavMenu2 ? "show" : "")} dropdown-menu")">
+                            <NavLink class="dropdown-item" href="/Infracciones">Infracciones</NavLink>
+                            <NavLink class="dropdown-item" href="/Infractores">Infractores</NavLink>
+                            <NavLink class="dropdown-item" href="/Comparendos">Comparendos</NavLink>
+                            <NavLink class="dropdown-item" href="/Tipos_Nov">Tipos Resoluciones</NavLink>
+                            <NavLink class="dropdown-item" href="/Tarifas">Tarifas</NavLink>
+                            <NavLink class="dropdown-item" href="/Intereses">Intereses</NavLink>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-list mt-4">
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle btn-block ms-3" style="width: 200px; background-color:#122159" @onclick="ToggleNavMenu2">
+                            Básicos
+                        </button>
+                        <div class="@($"{(collapseNavMenu2 ? "show" : "")} dropdown-menu")">
+                            <NavLink class="dropdown-item" href="/Infracciones">Infracciones</NavLink>
+                            <NavLink class="dropdown-item" href="/Infractores">Infractores</NavLink>
+                            <NavLink class="dropdown-item" href="/Comparendos">Comparendos</NavLink>
+                            <NavLink class="dropdown-item" href="/Tipos_Nov">Tipos Resoluciones</NavLink>
+                            <NavLink class="dropdown-item" href="/Tarifas">Tarifas</NavLink>
+                            <NavLink class="dropdown-item" href="/Intereses">Intereses</NavLink>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-list mt-4">
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle btn-block ms-3" style="width: 200px; background-color:#122159" @onclick="ToggleNavMenu2">
+                            Básicos
+                        </button>
+                        <div class="@($"{(collapseNavMenu2 ? "show" : "")} dropdown-menu")">
+                            <NavLink class="dropdown-item" href="/Infracciones">Infracciones</NavLink>
+                            <NavLink class="dropdown-item" href="/Infractores">Infractores</NavLink>
+                            <NavLink class="dropdown-item" href="/Comparendos">Comparendos</NavLink>
+                            <NavLink class="dropdown-item" href="/Tipos_Nov">Tipos Resoluciones</NavLink>
+                            <NavLink class="dropdown-item" href="/Tarifas">Tarifas</NavLink>
+                            <NavLink class="dropdown-item" href="/Intereses">Intereses</NavLink>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <footer class="main-footer mt-5 ms-3">
+            <div class="float-right d-none d-sm-block">
+                <h5 class="text-white">Version 3.0.0</h5>
+            </div>
+            <h3 class="text-white small">Copyright &copy;DatasetSofware Todos los derechos reservados.</h3>
+        </footer>
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark"></aside>
+    </div>
+
+</body>
+</html>
 
 @code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private bool collapseNavMenu = false;
+    private bool collapseNavMenu2 = false;
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
     }
-}
+
+    private void ToggleNavMenu2()
+    {
+        collapseNavMenu2 = !collapseNavMenu2;
+    }
+ }

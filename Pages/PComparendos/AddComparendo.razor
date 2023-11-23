@@ -45,7 +45,7 @@
                                         <div class="form-group">
                                             <label for="lClaseVehiculo">Clase Vehiculo</label>
                                             <select id="lClaseVehiculo" class="form-control col-auto" @bind="comparendos.clase_veh">
-                                                <option value="1">Automovil</option>
+                                                <option value="1" selected>Automovil</option>
                                                 <option value="2">Bus</option>
                                                 <option value="3">Buseta</option>
                                                 <option value="4">Camion</option>
@@ -265,10 +265,6 @@
                                             <button @onclick="AddMulta" class="btn btn-primary pull-right">Guardar</button>
                                             <input type="hidden" @bind="comparendos.id" id="lId" />
                                         </div>
-                                        <div class="col-sm-4 text-center">
-                                            <button @onclick="buscarNombreInfraccion" class="btn btn-primary pull-right">buscarnombre</button>
-                                        </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -283,6 +279,14 @@
 </div>
 
 @code {
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        comparendos.tipo_id = 1;
+        comparendos.tipo_servicio = 4;
+        comparendos.clase_veh = 1;
+    }
 
     DateTime fechaHoy = DateTime.Now;
 
@@ -321,6 +325,7 @@
 
     protected async Task AddMulta()
     {
+        //aplico la validacion.
         if (IsValid(comparendos))
         {
             try
@@ -346,6 +351,7 @@
             await JSRuntime.InvokeVoidAsync("alert", "No se pueden crear comparendos con campos vacíos");
         }
     }
+    //validar campos.
     private bool IsValid(Comparendos comparendo)
     {
         PropertyInfo[] properties = comparendo.GetType().GetProperties();
@@ -404,7 +410,7 @@
         await Task.Delay(100);
 
         // Usa await para esperar la tarea y obtener el resultado
-        double resultado = await CalcularValor(comparendos.fecha, comparendos.infraccion, comparendos.grado_alcol, comparendos.reincide);
+        double resultado = await CalcularValor(comparendos.fecha, comparendos.infraccion?.ToUpper(), comparendos.grado_alcol, comparendos.reincide);
         //asigno nombreInfraccion al parametro infracciones.nombre para asi poder castearlo en el input.
         string nombreInfraccion = await buscarNombreInfraccion();
         infracciones.nombre = nombreInfraccion;
@@ -415,7 +421,7 @@
 
     private async Task<string> buscarNombreInfraccion()
     {
-        string codigoInfraccion = comparendos.infraccion;
+        string codigoInfraccion = comparendos.infraccion?.ToUpper();
         try
         {
             var infraccion = await InfraccionesService.GetNameInfraccionByCode(codigoInfraccion);
